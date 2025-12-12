@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
 export const SignInButton = () => {
@@ -11,22 +12,26 @@ export const SignInButton = () => {
     //   <div className="ease-&lsqb;cubic-bezier(0.19,1,0.22,1)&rsqb; absolute -left-18.75 -top-12.5 z-10 h-38.75 w-8 rotate-35 bg-white opacity-20 transition-all duration-500 group-hover:left-[120%]" />
     // </button>
 
-    <Button
-      className="cursor-pointer active:scale-90 transition-all duration-300"
-      variant="outline"
-    >
-      Sign In
-    </Button>
+    <Link to="/login">
+      <Button
+        className="cursor-pointer active:scale-90 transition-all duration-300"
+        variant="outline"
+      >
+        Sign In
+      </Button>
+    </Link>
   );
 };
 
 export const SignUpButton = () => {
   return (
-    <Button
-      className="cursor-pointer active:scale-90 transition-all duration-300"
-      variant="outline"
-    >
-      Sign Up
-    </Button>
+    <Link to="/register">
+      <Button
+        className="cursor-pointer active:scale-90 transition-all duration-300"
+        variant="outline"
+      >
+        Sign Up
+      </Button>
+    </Link>
   );
 };
