@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import NavLinks from "./NavLinks";
 import { SignInButton, SignUpButton } from "./AuthButtons";
+import UserNav from "./UserNav";
 
 const Navbar = () => {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   return (
     <div className="sticky top-0 z-50 h-16 px-4 py-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -15,6 +16,7 @@ const Navbar = () => {
               to="/"
               className="flex items-center gap-2 text-2xl font-bold text-indigo-600"
             >
+              <img src="/public/logo.svg" alt="" width={30} />
               Vaxify
             </Link>
           </div>
@@ -30,7 +32,7 @@ const Navbar = () => {
             // user dropdown menu for nav
             <div className="">
               {/*  */}
-              {/* <UserNav /> */}
+              <UserNav />
             </div>
           ) : (
             // auth button
