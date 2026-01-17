@@ -19,11 +19,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 // to access the auth context
-export const useAuth = () => {
+export const useAuthContext = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth muse be called within an AuthProvider comp");
+    throw new Error(
+      "useAuthContext muse be called within an AuthProvider comp"
+    );
   }
 
   return context;
