@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 
 interface AuthContextType {
   user: AuthUser | null;
+  setAuthUser: (user: AuthUser | null) => void;
 }
 
 // context with default val
@@ -14,7 +15,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setAuthUser: setUser }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
@@ -24,7 +27,7 @@ export const useAuthContext = () => {
 
   if (!context) {
     throw new Error(
-      "useAuthContext muse be called within an AuthProvider comp"
+      "useAuthContext muse be called within an AuthProvider comp",
     );
   }
 

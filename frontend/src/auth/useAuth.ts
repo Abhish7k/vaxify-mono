@@ -1,30 +1,65 @@
+import api from "@/lib/axios";
 import { useAuthContext } from "./AuthContext";
+import type { LoginResponse } from "@/types/auth";
+import { useNavigate } from "react-router-dom";
 
 // custom hook for the components to use
 export const useAuth = () => {
-  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { user, setAuthUser } = useAuthContext();
 
   // login action
   const login = async (email: string, password: string) => {
-    // TODO
-    // - call api
-    // - store token
-    // - update auth context
-    // - redirect based on role
+    const response = await api.post<LoginResponse>("/auth/api", {
+      email,
+      password,
+    });
+
+    const { token, user } = response.data;
+
+    // persist the jwt token
+    localStorage.setItem("token", token);
+
+    // update the auth context with user
+    setAuthUser(user);
+
+    // role base redirect
+    switch (user.role) {
+      case "user":
+        navigate("/user/dashboard");
+        break;
+      case "staff":
+        navigate("/staff/dashboard");
+        break;
+      case "admin":
+        navigate("/admin/dashboard");
+        break;
+
+      // fallback for unknown roles
+      default:
+        navigate("/login");
+    }
   };
 
   // logout action
   const logout = () => {
-    // TODO
-    // - remove toke
-    // - reset auth data
-    // - redirect
+    // remove jwt token
+    localStorage.removeItem("token");
+
+    // clear auth context
+    setAuthUser(null);
+
+    // redirect
+    navigate(
+      "/",
+      { replace: true }, // replace history to prevent back btn to protected pages
+    );
   };
 
   return {
     user,
+    isAuthenticated: !!user,
     login,
     logout,
-    isAuthenticated: !!user,
   };
 };
