@@ -1,32 +1,30 @@
-import api from "@/lib/axios";
+import api from "@/api/axios";
 import { useAuthContext } from "./AuthContext";
-import type { LoginResponse } from "@/types/auth";
 import { useNavigate } from "react-router-dom";
+import { loginApi } from "@/api/auth.api";
+import type { Role } from "@/types/auth";
 
 // custom hook for the components to use
 export const useAuth = () => {
   const navigate = useNavigate();
   const { user, setAuthUser } = useAuthContext();
 
-  const registerUser = async (registerUserData) => {
+  const registerUser = async (registerUserData: unknown) => {
     await api.post("/auth/register/user", registerUserData);
 
     navigate("/login");
   };
 
-  const registerStaff = async (registerStaffData) => {
+  const registerStaff = async (registerStaffData: unknown) => {
     await api.post("/auth/register/staff", registerStaffData);
 
     navigate("/login");
   };
 
   const login = async (email: string, password: string) => {
-    const response = await api.post<LoginResponse>("/auth/api", {
-      email,
-      password,
-    });
+    const response = await loginApi(email, password);
 
-    const { token, user } = response.data;
+    const { token, user } = response;
 
     // persist the jwt token
     localStorage.setItem("token", token);
@@ -35,21 +33,7 @@ export const useAuth = () => {
     setAuthUser(user);
 
     // role base redirect
-    switch (user.role) {
-      case "user":
-        navigate("/user/dashboard");
-        break;
-      case "staff":
-        navigate("/staff/dashboard");
-        break;
-      case "admin":
-        navigate("/admin/dashboard");
-        break;
-
-      // fallback for unknown roles
-      default:
-        navigate("/login");
-    }
+    redirectToDashboard(user.role);
   };
 
   const logout = () => {
@@ -64,6 +48,19 @@ export const useAuth = () => {
       "/",
       { replace: true }, // replace history to prevent back btn to access protected pages
     );
+  };
+
+  const redirectToDashboard = (role: Role) => {
+    switch (role) {
+      case "staff":
+        navigate("/staff/dashboard");
+        break;
+      case "admin":
+        navigate("/admin/dashboard");
+        break;
+      default:
+        navigate("/dashboard");
+    }
   };
 
   return {
