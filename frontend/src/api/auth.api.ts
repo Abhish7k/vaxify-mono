@@ -1,10 +1,18 @@
 import type { LoginResponse } from "@/types/auth";
 import api from "./axios";
+import { mockLoginApi } from "./auth.mock.api";
+
+const USE_MOCKS = "true";
 
 export const loginApi = async (
   email: string,
   password: string,
 ): Promise<LoginResponse> => {
+  // for testing only
+  if (USE_MOCKS) {
+    return mockLoginApi(email, password);
+  }
+
   const response = await api.post<LoginResponse>("/auth/login", {
     email,
     password,
