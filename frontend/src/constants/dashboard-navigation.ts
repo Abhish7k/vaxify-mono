@@ -5,80 +5,165 @@ import {
   Users,
   BarChart,
   User,
+  CalendarPlus,
+  FileText,
+  ShieldCheck,
+  Settings,
+  HelpCircle,
 } from "lucide-react";
 
 export const DashboardRoleBasedNavigationLinks = {
   user: [
     {
-      label: "Dashboard",
-      path: "/dashboard",
-      icon: LayoutDashboard,
+      group: "Main",
+      items: [
+        {
+          label: "Dashboard",
+          path: "/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          label: "Book Appointment",
+          path: "/appointments/book",
+          icon: CalendarPlus,
+        },
+        {
+          label: "My Appointments",
+          path: "/my-appointments",
+          icon: Calendar,
+        },
+        {
+          label: "Vaccination Centers",
+          path: "/centers",
+          icon: Hospital,
+        },
+      ],
     },
     {
-      label: "Centers",
-      path: "/centers",
-      icon: Hospital,
+      group: "Records",
+      items: [
+        {
+          label: "Vaccination History",
+          path: "/records/history",
+          icon: ShieldCheck,
+        },
+        {
+          label: "Certificates",
+          path: "/records/certificates",
+          icon: FileText,
+        },
+      ],
     },
     {
-      label: "My Appointments",
-      path: "/my-appointments",
-      icon: Calendar,
-    },
-    {
-      label: "Profile",
-      path: "/profile",
-      icon: User,
+      group: "Account",
+      items: [
+        {
+          label: "Profile",
+          path: "/profile",
+          icon: User,
+        },
+        {
+          label: "Settings",
+          path: "/settings",
+          icon: Settings,
+        },
+        {
+          label: "Help & Support",
+          path: "/support",
+          icon: HelpCircle,
+        },
+      ],
     },
   ],
 
   staff: [
     {
-      label: "Dashboard",
-      path: "/staff/dashboard",
-      icon: LayoutDashboard,
+      group: "Main",
+      items: [
+        {
+          label: "Dashboard",
+          path: "/staff/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          label: "Manage Centers",
+          path: "/staff/centers/manage",
+          icon: Hospital,
+        },
+        {
+          label: "All Appointments",
+          path: "/staff/appointments",
+          icon: Calendar,
+        },
+      ],
     },
     {
-      label: "Manage Centers",
-      path: "/staff/centers/manage",
-      icon: Hospital,
-    },
-    {
-      label: "All Appointments",
-      path: "/staff/appointments",
-      icon: Calendar,
-    },
-    {
-      label: "Profile",
-      path: "/staff/profile",
-      icon: User,
+      group: "Account",
+      items: [
+        {
+          label: "Profile",
+          path: "/staff/profile",
+          icon: User,
+        },
+        {
+          label: "Settings",
+          path: "/staff/settings",
+          icon: Settings,
+        },
+        {
+          label: "Help & Support",
+          path: "/staff/support",
+          icon: HelpCircle,
+        },
+      ],
     },
   ],
 
   admin: [
     {
-      label: "Dashboard",
-      path: "/admin/dashboard",
-      icon: LayoutDashboard,
+      group: "Main",
+      items: [
+        {
+          label: "Dashboard",
+          path: "/admin/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          label: "Hospitals",
+          path: "/admin/hospitals",
+          icon: Hospital,
+        },
+        {
+          label: "Users",
+          path: "/admin/users",
+          icon: Users,
+        },
+        {
+          label: "Analytics",
+          path: "/admin/analytics",
+          icon: BarChart,
+        },
+      ],
     },
     {
-      label: "Hospitals",
-      path: "/admin/hospitals",
-      icon: Hospital,
-    },
-    {
-      label: "Users",
-      path: "/admin/users",
-      icon: Users,
-    },
-    {
-      label: "Analytics",
-      path: "/admin/analytics",
-      icon: BarChart,
-    },
-    {
-      label: "Profile",
-      path: "/admin/profile",
-      icon: User,
+      group: "Account",
+      items: [
+        {
+          label: "Profile",
+          path: "/admin/profile",
+          icon: User,
+        },
+        {
+          label: "Settings",
+          path: "/admin/settings",
+          icon: Settings,
+        },
+        {
+          label: "Help & Support",
+          path: "/admin/support",
+          icon: HelpCircle,
+        },
+      ],
     },
   ],
 } as const;
