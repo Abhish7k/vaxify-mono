@@ -10,7 +10,7 @@ export const loginApi = async (
 ): Promise<LoginResponse> => {
   // for testing only
   if (USE_MOCKS) {
-    return mockLoginApi(email, password);
+    return mockLoginApi(email);
   }
 
   const response = await api.post<LoginResponse>("/auth/login", {

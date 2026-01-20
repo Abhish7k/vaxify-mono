@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 interface AuthContextType {
   user: AuthUser | null;
   setAuthUser: (user: AuthUser | null) => void;
+  loading: boolean;
 }
 
 // context with default val

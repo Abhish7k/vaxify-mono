@@ -1,9 +1,6 @@
 import type { AuthUser, LoginResponse } from "@/types/auth";
 
-export const mockLoginApi = async (
-  email: string,
-  password: string,
-): Promise<LoginResponse> => {
+export const mockLoginApi = async (email: string): Promise<LoginResponse> => {
   // simulate network delay
   await new Promise((res) => setTimeout(res, 500));
 
