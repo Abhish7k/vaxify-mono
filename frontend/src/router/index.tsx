@@ -9,6 +9,7 @@ import RegisterStaff from "@/pages/auth/RegisterStaff";
 import { ProtectedRoute } from "./ProtectedRoute";
 import UserDashboard from "@/pages/user/UserDashboard";
 import DashboardLayout from "@/components/dashboards/DashboardLayout";
+import { NotFoundPage } from "@/pages/NotFoundPage";
 
 export const router = createBrowserRouter([
   {
@@ -54,4 +55,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  // fallback
+  { path: "*", element: <NotFoundPage /> },
 ]);
