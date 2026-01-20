@@ -29,6 +29,7 @@ const AppSidebar = () => {
                 <div className="">
                   <img src="/logo.svg" alt="" width={30} className="ml-1" />
                 </div>
+
                 <div className="grid flex-1 text-left text-lg leading-tight">
                   <span className="truncate font-semibold">Vaxify</span>
                 </div>
