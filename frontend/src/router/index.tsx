@@ -6,6 +6,9 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import RegisterUser from "@/pages/auth/RegisterUser";
 import RegisterStaff from "@/pages/auth/RegisterStaff";
+import { ProtectedRoute } from "./ProtectedRoute";
+import UserDashboard from "@/pages/user/UserDashboard";
+import DashboardLayout from "@/components/dashboards/layout/DashboardLayout";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +35,22 @@ export const router = createBrowserRouter([
       {
         path: "/register/staff",
         element: <RegisterStaff />,
+      },
+    ],
+  },
+
+  //
+  {
+    element: <ProtectedRoute allowedRoles={["user"]} />,
+    children: [
+      {
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <UserDashboard />,
+          },
+        ],
       },
     ],
   },
