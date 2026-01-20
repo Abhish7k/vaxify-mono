@@ -7,7 +7,7 @@ import {
   User,
 } from "lucide-react";
 
-export const NAVIGATION = {
+export const DashboardRoleBasedNavigationLinks = {
   user: [
     {
       label: "Dashboard",

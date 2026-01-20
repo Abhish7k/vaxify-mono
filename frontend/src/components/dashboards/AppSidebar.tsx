@@ -1,3 +1,4 @@
+import { useAuth } from "@/auth/useAuth";
 import {
   Sidebar,
   SidebarContent,
@@ -8,10 +9,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard } from "lucide-react";
+import { DashboardRoleBasedNavigationLinks } from "@/constants/dashboard-navigation";
 import { Link, NavLink } from "react-router-dom";
 
 const AppSidebar = () => {
+  const { user } = useAuth();
+  const userRole = user?.role;
+
+  const menuItems = DashboardRoleBasedNavigationLinks[userRole!];
+
+  console.log(menuItems);
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -35,14 +43,16 @@ const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/dashboard">
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span>Dashboard</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {menuItems?.map((item, idx) => (
+                <SidebarMenuItem key={idx}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.path}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
