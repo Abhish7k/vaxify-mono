@@ -16,12 +16,15 @@ import {
   User,
 } from "lucide-react";
 import Avvvatars from "avvvatars-react";
+import { useAuth } from "@/auth/useAuth";
 
 const UserNav = () => {
-  const user = {
-    name: "FullName",
-    email: "email@gmail.com",
-    image: "",
+  const { user, logout } = useAuth();
+
+  console.log("from user nav: ", user);
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -29,10 +32,10 @@ const UserNav = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="cursor-pointer">
           <Avatar>
-            <AvatarImage src={user.image} />
+            <AvatarImage src={""} />
 
             <AvatarFallback>
-              <Avvvatars value={user.email} />
+              <Avvvatars value={user?.email || "user"} style="character" />
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -40,9 +43,13 @@ const UserNav = () => {
         <DropdownMenuContent side="bottom" align="end" className="min-w-52">
           <DropdownMenuLabel className="pl-2 pr-4">
             <div className="flex flex-col gap-1">
-              <p className="font-medium leading-none capitalize">{user.name}</p>
+              <p className="font-medium leading-none capitalize">
+                {/* {user?.name} */}
+                Full Name
+              </p>
+
               <p className="text-xs leading-none text-muted-foreground max-w-40 truncate">
-                {user.email}
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
@@ -60,12 +67,13 @@ const UserNav = () => {
 
           <DropdownMenuSeparator />
 
-          <Link to="/logout" className="flex gap-2 items-center">
-            <DropdownMenuItem className="hover:bg-gray-100 transition-all w-full cursor-pointer">
-              <LogOut className="text-xl" />
-              Logout
-            </DropdownMenuItem>
-          </Link>
+          <DropdownMenuItem
+            className="hover:bg-gray-100 transition-all w-full cursor-pointer"
+            onClick={handleLogout}
+          >
+            <LogOut className="text-xl" />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -75,17 +83,17 @@ const UserNav = () => {
 const userDropdownItems = [
   {
     name: "Dashboard",
-    href: "/user/dashboard",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     name: "Profile",
-    href: "/user/profile",
+    href: "/profile",
     icon: User,
   },
   {
     name: "My Appointments",
-    href: "/user/appointments",
+    href: "/appointments",
     icon: CalendarCheck,
   },
   {

@@ -3,9 +3,10 @@ import NavLinks from "./NavLinks";
 import { SignInButton, SignUpButton } from "./AuthButtons";
 import UserNav from "./UserNav";
 import MobileNav from "./MobileNav";
+import { useAuth } from "@/auth/useAuth";
 
 const Navbar = () => {
-  const isAuthenticated = false;
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="sticky top-0 z-50 h-16 px-4 py-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
