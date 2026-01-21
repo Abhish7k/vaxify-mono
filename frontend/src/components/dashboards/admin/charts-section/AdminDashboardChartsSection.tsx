@@ -1,4 +1,5 @@
-import AdminAppointmentStatusPie from "./AdminDashboardSystemHealth";
+import AdminQuickActions from "./AdminDashboardQuickActions";
+import AdminAppointmentStatusPie from "./AdminDashboardAppointmentsStatus";
 import AdminPlatformMetricsChart from "./AdminPlatformMetricsChart";
 
 const AdminDashboardChartsSection = () => {
@@ -8,8 +9,10 @@ const AdminDashboardChartsSection = () => {
       <AdminPlatformMetricsChart />
 
       {/*  */}
-      <div className="col-span-4">
+      <div className="grid gap-5 col-span-4">
         <AdminAppointmentStatusPie />
+
+        <AdminQuickActions />
       </div>
     </div>
   );
