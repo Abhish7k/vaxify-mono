@@ -6,6 +6,7 @@ import {
 import { Outlet } from "react-router-dom";
 import AppSidebar from "./sidebar/AppSidebar";
 import { Separator } from "../ui/separator";
+import UserNav from "../navbar/UserNav";
 
 const DashboardLayout = () => {
   return (
@@ -27,7 +28,9 @@ const DashboardLayout = () => {
               <h1 className="mt-0.5">Dashboard</h1>
             </div>
 
-            <div className="text-sm">User</div>
+            <div>
+              <UserNav />
+            </div>
           </header>
 
           <main className="flex-1 overflow-y-auto p-6">
