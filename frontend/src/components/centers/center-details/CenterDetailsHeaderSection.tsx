@@ -3,12 +3,50 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CenterData } from "./types";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/auth/useAuth";
+import { toast } from "sonner";
 
 interface Props {
   center: CenterData;
 }
 
 const CenterDetailsHeaderSection = ({ center }: Props) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleClick = () => {
+    const path = `/appointments/book/${center.id}`;
+
+    if (!isAuthenticated) {
+      toast.warning("Login Required", {
+        style: {
+          backgroundColor: "#fffbeb",
+          color: "#92400e",
+        },
+      });
+
+      setTimeout(() => {
+        toast.info("Redirecting to login page…", {
+          style: {
+            backgroundColor: "#eff6ff",
+            color: "#1e40af",
+          },
+        });
+      }, 1000);
+
+      setTimeout(() => {
+        navigate("/login", {
+          state: { from: path },
+        });
+      }, 2500);
+
+      return;
+    }
+
+    navigate(path);
+  };
+
   return (
     <div className="mb-12 lg:mb-16">
       <div className="flex flex-col md:flex-row lg:items-start lg:justify-between gap-8 mb-8 transition-all">
@@ -41,7 +79,10 @@ const CenterDetailsHeaderSection = ({ center }: Props) => {
               Book your appointment in seconds
             </p>
 
-            <Button className="md:w-full cursor-pointer active:scale-95 transition-all duration-300 group">
+            <Button
+              className="md:w-full cursor-pointer active:scale-95 transition-all duration-300 group"
+              onClick={handleClick}
+            >
               Book Appointment
               <ChevronRight className="w-4 h-4 ml-1 mb-0.5 group-hover:translate-x-0.5 transition-all duration-300" />
             </Button>
