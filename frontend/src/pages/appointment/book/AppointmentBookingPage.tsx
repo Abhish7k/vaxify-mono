@@ -44,7 +44,7 @@ const AppointmentBookingPage = () => {
   };
 
   return (
-    <div className="py-10 max-w-7xl mx-auto px-10 flex flex-col gap-10 min-h-[90vh]">
+    <div className="py-10 max-w-7xl mx-auto px-5 flex flex-col gap-10 min-h-[90vh]">
       <BookingHeaderSection center={center} />
 
       <div className="flex flex-col md:flex-row justify-between gap-10 px-5 mt-16 mb-32">

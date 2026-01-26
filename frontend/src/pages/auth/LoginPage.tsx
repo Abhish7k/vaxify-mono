@@ -4,7 +4,7 @@ import QuickDemoLogins from "@/components/auth/QuickDemoLogins";
 const LoginPage = () => {
   return (
     <div>
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 pt-10">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-2">
           Welcome back
         </h1>

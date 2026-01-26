@@ -40,7 +40,7 @@ export default function BookingSummaryPage() {
   };
 
   return (
-    <div className="py-10 max-w-3xl mx-auto px-4 space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
+    <div className="py-10 max-w-3xl mx-auto px-10 space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
       <h1 className="text-xl font-semibold">Review your booking</h1>
 
       <Card>
@@ -68,10 +68,10 @@ export default function BookingSummaryPage() {
         <GoBackButton label="Edit booking" />
 
         <Button
-          className="text-sm gap-2 cursor-pointer active:scale-95 transition-all"
+          className="text-xs sm:text-sm gap-2 cursor-pointer active:scale-95 transition-all"
           onClick={handleConfirmBooking}
         >
-          <CheckCircle className="w-4 h-4" />
+          <CheckCircle className="size-3.5 sm:size-4" />
           Confirm Appointment
         </Button>
       </div>
