@@ -24,7 +24,7 @@ export const DashboardRoleBasedNavigationLinks = {
         },
         {
           label: "Book Appointment",
-          path: "/appointments/book",
+          path: "/centers",
           icon: CalendarPlus,
         },
         {

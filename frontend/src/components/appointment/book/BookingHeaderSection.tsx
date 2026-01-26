@@ -8,7 +8,7 @@ type Props = {
 
 export default function BookingHeaderSection({ center }: Props) {
   return (
-    <Card className="border-dashed">
+    <Card className="border-dashed h-fit">
       <CardContent className="px-4 sm:px-6 transition-all">
         <div className="flex flex-col sm:flex-row sm:justify-between transition-all">
           {/* icon + name */}

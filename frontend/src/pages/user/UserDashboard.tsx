@@ -32,11 +32,11 @@ export default function UserDashboard() {
           </p>
         </div>
 
-        {/* <Link to="/appointments/book"> */}
-        <Button className="w-full sm:w-auto cursor-pointer active:scale-95 transition-all">
-          Book Appointment
-        </Button>
-        {/* </Link> */}
+        <Link to="/centers">
+          <Button className="w-full sm:w-auto cursor-pointer active:scale-95 transition-all">
+            Book Appointment
+          </Button>
+        </Link>
       </div>
 
       {/* Top Cards */}
@@ -184,7 +184,7 @@ export default function UserDashboard() {
 const QuickActionItems = [
   {
     name: "Book Appointments",
-    link: "/appointments/book",
+    link: "/centers",
   },
   {
     name: "View Appointments",

@@ -20,6 +20,8 @@ export default function BookingDateAndSlotSection({
     onDateSelect(today.toISOString());
 
     onResetSlot();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

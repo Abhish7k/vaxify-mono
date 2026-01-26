@@ -6,6 +6,7 @@ import { centersData } from "@/constants/centers-mock-data";
 import { useState } from "react";
 import BookingDateAndSlotSection from "@/components/appointment/book/BookingSlotSection";
 import VaccineSelectionSection from "@/components/appointment/book/VaccineSelectionSection";
+import ConfirmBookingFooter from "@/components/appointment/book/ConfirmBookingFooter";
 
 const AppointmentBookingPage = () => {
   const { centerId } = useParams();
@@ -23,11 +24,28 @@ const AppointmentBookingPage = () => {
     return <CenterNotFound />;
   }
 
+  const selectedVaccine = vaccines.find((v) => v.id === selectedVaccineId);
+
+  const isBookingReady = selectedVaccineId && selectedDate && selectedSlot;
+
+  const handleConfirmBooking = () => {
+    if (!isBookingReady) return;
+
+    const payload = {
+      centerId,
+      vaccineId: selectedVaccineId,
+      date: selectedDate,
+      time: selectedSlot,
+    };
+
+    console.log("confirm booking payload: ", payload);
+  };
+
   return (
-    <div className="py-10 max-w-7xl mx-auto px-10 grid gap-10">
+    <div className="py-10 max-w-7xl mx-auto px-10 flex flex-col gap-10 min-h-[90vh]">
       <BookingHeaderSection center={center} />
 
-      <div className="flex flex-col md:flex-row justify-between gap-10 px-5">
+      <div className="flex flex-col md:flex-row justify-between gap-10 px-5 mt-16 mb-32">
         <VaccineSelectionSection
           vaccines={vaccines}
           selectedVaccineId={selectedVaccineId}
@@ -49,6 +67,14 @@ const AppointmentBookingPage = () => {
           onResetSlot={() => setSelectedSlot(null)}
         />
       </div>
+
+      <ConfirmBookingFooter
+        isDisabled={!isBookingReady}
+        vaccineName={selectedVaccine?.name}
+        selectedDate={selectedDate}
+        selectedSlot={selectedSlot}
+        onConfirm={handleConfirmBooking}
+      />
     </div>
   );
 };
