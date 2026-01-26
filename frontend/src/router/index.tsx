@@ -18,6 +18,7 @@ import AppointmentBookingPage from "@/pages/appointment/book/AppointmentBookingP
 import BookingSummaryPage from "@/pages/appointment/book/BookingSummaryPage";
 import BookingSuccessPage from "@/pages/appointment/book/BookingSuccessPage";
 import MyAppointmentsPage from "@/pages/appointment/MyAppointmentsPage";
+import AboutUsPage from "@/pages/AboutUsPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: "/centers/:centerId",
         element: <CenterDetailsPage />,
+      },
+      {
+        path: "/about",
+        element: <AboutUsPage />,
       },
     ],
   },
