@@ -15,7 +15,7 @@ export default function AboutUsPage() {
         stiffness: 260,
         damping: 20,
       }}
-      className="mx-auto max-w-5xl px-6 py-20"
+      className="mx-auto max-w-5xl px-10 py-20"
     >
       {/* about */}
       <section className="space-y-10">
