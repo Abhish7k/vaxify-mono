@@ -8,6 +8,7 @@ import type { Appointment } from "@/components/appointment/my-appointments/MyApp
 import { mockAppointments } from "@/components/appointment/my-appointments/mock-data";
 import MyAppointmentsListSection from "@/components/appointment/my-appointments/MyAppointmentsListSection";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function MyAppointmentsPage() {
   const navigate = useNavigate();
@@ -16,6 +17,19 @@ export default function MyAppointmentsPage() {
 
   const [appointments, setAppointments] =
     useState<Appointment[]>(mockAppointments);
+
+  const handleCancelAppointment = (appointment: Appointment) => {
+    setAppointments(mockAppointments);
+
+    toast.success("Cancelled appointment successfully", {
+      style: {
+        backgroundColor: "#e7f9ed",
+        color: "#0f7a28",
+      },
+    });
+
+    console.log("Cancel:", appointment.id);
+  };
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto mt-10 px-10">
@@ -34,9 +48,9 @@ export default function MyAppointmentsPage() {
         activeStatus={activeStatus}
         onBrowseCenters={() => navigate("/centers")}
         onViewCenter={(centerId) => navigate(`/centers/${centerId}`)}
-        onCancelAppointment={(appointment) => {
-          console.log("Cancel:", appointment.id);
-        }}
+        onCancelAppointment={(appointment) =>
+          handleCancelAppointment(appointment)
+        }
       />
     </div>
   );

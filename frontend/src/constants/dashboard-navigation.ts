@@ -6,8 +6,6 @@ import {
   BarChart,
   User,
   CalendarPlus,
-  FileText,
-  ShieldCheck,
   Settings,
   HelpCircle,
 } from "lucide-react";
@@ -39,21 +37,7 @@ export const DashboardRoleBasedNavigationLinks = {
         },
       ],
     },
-    {
-      group: "Records",
-      items: [
-        {
-          label: "Vaccination History",
-          path: "/records/history",
-          icon: ShieldCheck,
-        },
-        {
-          label: "Certificates",
-          path: "/records/certificates",
-          icon: FileText,
-        },
-      ],
-    },
+
     {
       group: "Account",
       items: [

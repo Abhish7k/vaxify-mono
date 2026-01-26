@@ -19,6 +19,7 @@ import BookingSummaryPage from "@/pages/appointment/book/BookingSummaryPage";
 import BookingSuccessPage from "@/pages/appointment/book/BookingSuccessPage";
 import MyAppointmentsPage from "@/pages/appointment/MyAppointmentsPage";
 import AboutUsPage from "@/pages/AboutUsPage";
+import StaffAppointmentsPage from "@/pages/staff/StaffAppointmentsPage";
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +115,15 @@ export const router = createBrowserRouter([
           {
             path: "/staff/dashboard",
             element: <StaffDashboard />,
+          },
+        ],
+      },
+      {
+        element: <App />,
+        children: [
+          {
+            path: "/staff/appointments",
+            element: <StaffAppointmentsPage />,
           },
         ],
       },
