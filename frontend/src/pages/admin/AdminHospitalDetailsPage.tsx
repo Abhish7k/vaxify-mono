@@ -1,12 +1,8 @@
 import AdminHospitalFloatingActions from "@/components/admin/hospital-details-page/AdminHospitalActionsSection";
-import AdminHospitalDetailsHeaderSection from "@/components/admin/hospital-details-page/AdminHospitalDetailsHeaderSection";
-import AdminHospitalMetaSection from "@/components/admin/hospital-details-page/AdminHospitalMetaSection";
-import AdminHospitalOperationsSection from "@/components/admin/hospital-details-page/AdminHospitalOperationsSection";
-import AdminHospitalOverviewSection from "@/components/admin/hospital-details-page/AdminHospitalOverviewSection";
-import AdminHospitalStaffSection from "@/components/admin/hospital-details-page/AdminHospitalStaffSection";
 import { mockHospitalDetails } from "@/components/admin/hospital-details-page/mockdata";
 import { useState } from "react";
 import { toast } from "sonner";
+import MainSection from "./AdminHospitalDetailsMainSection";
 
 export default function AdminHospitalDetailsPage() {
   const [hospital, setHospital] = useState(mockHospitalDetails);
@@ -44,39 +40,9 @@ export default function AdminHospitalDetailsPage() {
   };
 
   return (
-    <div className="px-5 md:px-10 transition-all space-y-10 mb-40">
-      {/* header */}
-      <AdminHospitalDetailsHeaderSection
-        hospitalName={mockHospitalDetails.name}
-        status={mockHospitalDetails.status}
-      />
+    <div className="px-5 py-5 md:px-10">
+      <MainSection />
 
-      {/* overview */}
-      <AdminHospitalOverviewSection
-        address={mockHospitalDetails.address}
-        name={mockHospitalDetails.name}
-      />
-
-      {/* staff */}
-      <AdminHospitalStaffSection
-        name={mockHospitalDetails.staffName}
-        email={mockHospitalDetails.staffEmail}
-        phone={mockHospitalDetails.staffPhone}
-      />
-
-      {/* operations */}
-      <AdminHospitalOperationsSection
-        availableVaccines={mockHospitalDetails.availableVaccines}
-        workingHours={mockHospitalDetails.workingHours}
-      />
-
-      {/* metadata */}
-      <AdminHospitalMetaSection
-        hospitalId={mockHospitalDetails.id}
-        createdAt={mockHospitalDetails.createdAt}
-      />
-
-      {/* floating actions */}
       <AdminHospitalFloatingActions
         hospitalName={hospital.name}
         status={hospital.status}

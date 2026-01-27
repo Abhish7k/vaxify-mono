@@ -28,7 +28,7 @@ export default function AdminHospitalFloatingActions({
   if (status !== "PENDING") return null;
 
   return (
-    <div className="fixed bottom-10 right-10 md:right-20 z-50">
+    <div className="fixed bottom-10 right-10 md:bottom-14 md:right-20 z-50">
       <div
         className="
           w-72 rounded-lg border p-4

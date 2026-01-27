@@ -12,3 +12,12 @@ export const mockHospitalDetails = {
   workingHours: "9:00 AM – 5:00 PM",
   createdAt: "2026-01-10",
 };
+
+export const statusVariant: Record<
+  HospitalStatus,
+  "default" | "secondary" | "destructive"
+> = {
+  PENDING: "secondary",
+  APPROVED: "default",
+  REJECTED: "destructive",
+};
