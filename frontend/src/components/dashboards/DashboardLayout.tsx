@@ -24,8 +24,6 @@ const DashboardLayout = () => {
                 orientation="vertical"
                 className="mx-2 data-[orientation=vertical]:h-4"
               />
-
-              <h1 className="mt-0.5">Dashboard</h1>
             </div>
 
             <div>

@@ -21,6 +21,7 @@ import MyAppointmentsPage from "@/pages/appointment/MyAppointmentsPage";
 import AboutUsPage from "@/pages/AboutUsPage";
 import StaffAppointmentsPage from "@/pages/staff/StaffAppointmentsPage";
 import AdminHospitalsPage from "@/pages/admin/AdminHospitalsPage";
+import AdminHospitalDetailsPage from "@/pages/admin/AdminHospitalDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -146,6 +147,10 @@ export const router = createBrowserRouter([
           {
             path: "/admin/hospitals",
             element: <AdminHospitalsPage />,
+          },
+          {
+            path: "/admin/hospitals/:hospitalId",
+            element: <AdminHospitalDetailsPage />,
           },
         ],
       },
