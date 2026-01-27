@@ -20,6 +20,7 @@ import BookingSuccessPage from "@/pages/appointment/book/BookingSuccessPage";
 import MyAppointmentsPage from "@/pages/appointment/MyAppointmentsPage";
 import AboutUsPage from "@/pages/AboutUsPage";
 import StaffAppointmentsPage from "@/pages/staff/StaffAppointmentsPage";
+import AdminHospitalsPage from "@/pages/admin/AdminHospitalsPage";
 
 export const router = createBrowserRouter([
   {
@@ -140,6 +141,11 @@ export const router = createBrowserRouter([
           {
             path: "/admin/dashboard",
             element: <AdminDashboard />,
+          },
+
+          {
+            path: "/admin/hospitals",
+            element: <AdminHospitalsPage />,
           },
         ],
       },

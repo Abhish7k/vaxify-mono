@@ -39,9 +39,9 @@ export default function UserDashboard() {
         </Link>
       </div>
 
-      {/* Top Cards */}
+      {/* top Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Upcoming Appointment */}
+        {/* tpcoming appointment */}
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
@@ -55,7 +55,7 @@ export default function UserDashboard() {
           </CardFooter>
         </Card>
 
-        {/* Vaccination Status */}
+        {/* vaccination status */}
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
@@ -71,7 +71,7 @@ export default function UserDashboard() {
           </CardFooter>
         </Card>
 
-        {/* Total Appointments */}
+        {/* total appointments */}
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
@@ -85,7 +85,7 @@ export default function UserDashboard() {
           </CardFooter>
         </Card>
 
-        {/* Certificate Status */}
+        {/* certificate status */}
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
@@ -102,7 +102,7 @@ export default function UserDashboard() {
         </Card>
       </div>
 
-      {/* Bottom Section */}
+      {/* bottom section */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Recent Appointments */}
         <Card className="lg:col-span-2">
@@ -156,7 +156,7 @@ export default function UserDashboard() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
+        {/* quick actions */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
