@@ -30,11 +30,6 @@ export const DashboardRoleBasedNavigationLinks = {
           path: "/appointments",
           icon: Calendar,
         },
-        {
-          label: "Vaccination Centers",
-          path: "/centers",
-          icon: Hospital,
-        },
       ],
     },
 

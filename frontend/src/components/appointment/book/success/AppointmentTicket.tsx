@@ -1,5 +1,4 @@
-import * as React from "react";
-import { MapPin, Syringe, Calendar } from "lucide-react";
+import { MapPin, Syringe, Calendar, CheckCircleIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ export function AppointmentBookingSuccess({
     >
       {/* header */}
       <div className="p-8 flex flex-col items-center text-center">
-        <div className="p-3 bg-green-500/10 rounded-full">
+        <div className="p-4 bg-green-500/10 rounded-full">
           <CheckCircleIcon className="h-10 w-10 text-green-600" />
         </div>
 
@@ -111,19 +110,3 @@ export type AppointmentTicketProps = {
   date: string;
   slot: string;
 };
-
-const CheckCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-    <polyline points="22 4 12 14.01 9 11.01" />
-  </svg>
-);

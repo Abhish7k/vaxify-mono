@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import BookingHeaderSection from "@/components/appointment/book/BookingHeaderSection";
 import CenterNotFound from "@/components/centers/center-details/CenterNotFound";
 
@@ -7,6 +8,27 @@ import { useState } from "react";
 import BookingDateAndSlotSection from "@/components/appointment/book/BookingSlotSection";
 import VaccineSelectionSection from "@/components/appointment/book/VaccineSelectionSection";
 import ConfirmBookingFooter from "@/components/appointment/book/ConfirmBookingFooter";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
+// opacity only for fixed elements to avoid stacking context issues
+const fixedItemVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.4 } },
+};
 
 const AppointmentBookingPage = () => {
   const { centerId } = useParams();
@@ -44,40 +66,53 @@ const AppointmentBookingPage = () => {
   };
 
   return (
-    <div className="py-10 max-w-7xl mx-auto px-5 flex flex-col gap-10 min-h-[90vh]">
-      <BookingHeaderSection center={center} />
+    <motion.div
+      className="py-10 max-w-7xl mx-auto px-5 flex flex-col gap-10 min-h-[90vh]"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants}>
+        <BookingHeaderSection center={center} />
+      </motion.div>
 
       <div className="flex flex-col md:flex-row justify-between gap-10 px-5 mt-16 mb-32">
-        <VaccineSelectionSection
-          vaccines={vaccines}
-          selectedVaccineId={selectedVaccineId}
-          onSelect={(id) => {
-            setSelectedVaccineId(id);
-            setSelectedDate(null);
-            setSelectedSlot(null);
-          }}
-        />
+        <motion.div className="w-full" variants={itemVariants}>
+          <VaccineSelectionSection
+            vaccines={vaccines}
+            selectedVaccineId={selectedVaccineId}
+            onSelect={(id) => {
+              setSelectedVaccineId(id);
+              setSelectedDate(null);
+              setSelectedSlot(null);
+            }}
+          />
+        </motion.div>
 
-        <BookingDateAndSlotSection
-          selectedDate={selectedDate}
-          selectedSlot={selectedSlot}
-          onDateSelect={(date) => {
-            setSelectedDate(date);
-            setSelectedSlot(null);
-          }}
-          onSlotSelect={setSelectedSlot}
-          onResetSlot={() => setSelectedSlot(null)}
-        />
+        <motion.div className="w-full" variants={itemVariants}>
+          <BookingDateAndSlotSection
+            selectedDate={selectedDate}
+            selectedSlot={selectedSlot}
+            onDateSelect={(date) => {
+              setSelectedDate(date);
+              setSelectedSlot(null);
+            }}
+            onSlotSelect={setSelectedSlot}
+            onResetSlot={() => setSelectedSlot(null)}
+          />
+        </motion.div>
       </div>
 
-      <ConfirmBookingFooter
-        isDisabled={!isBookingReady}
-        vaccineName={selectedVaccine?.name}
-        selectedDate={selectedDate}
-        selectedSlot={selectedSlot}
-        onConfirm={handleConfirmBooking}
-      />
-    </div>
+      <motion.div variants={fixedItemVariants}>
+        <ConfirmBookingFooter
+          isDisabled={!isBookingReady}
+          vaccineName={selectedVaccine?.name}
+          selectedDate={selectedDate}
+          selectedSlot={selectedSlot}
+          onConfirm={handleConfirmBooking}
+        />
+      </motion.div>
+    </motion.div>
   );
 };
 

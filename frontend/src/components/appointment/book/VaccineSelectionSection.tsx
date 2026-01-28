@@ -1,4 +1,3 @@
-import { Syringe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type Vaccine = {
@@ -46,15 +45,15 @@ export default function VaccineSelectionSection({
                   : "border-dashed hover:border-foreground/30",
               )}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 {/* icon */}
-                <div
-                  className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-md",
-                    isSelected ? "bg-primary/10" : "bg-muted",
-                  )}
-                >
-                  <Syringe className="h-4 w-4 text-muted-foreground" />
+                <div className="">
+                  <img
+                    src="/icons/booster.png"
+                    alt=""
+                    className="h-14 w-14"
+                    draggable={false}
+                  />
                 </div>
 
                 {/* content */}

@@ -126,7 +126,7 @@ export function AppointmentScheduler({
   });
 
   return (
-    <div className="flex flex-col lg:flex-row w-full max-w-3xl rounded-xl border bg-card overflow-hidden shadow-xl transition-all">
+    <div className="flex flex-col lg:flex-row w-full max-w-3xl md:max-w-5xl rounded-xl border bg-card overflow-hidden shadow-xl transition-all">
       {/* calendar */}
       <div className="flex-1 p-6">
         <div className="flex justify-between mb-4">
@@ -188,7 +188,7 @@ export function AppointmentScheduler({
                 disabled={!isAvailable}
                 onClick={() => handleDateClick(day)}
                 className={cn(
-                  "p-2 md:p-4 rounded-lg text-sm font-medium cursor-pointer transition-all",
+                  "aspect-square flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-all p-2 lg:px-5",
                   day === selectedDate &&
                     "bg-primary text-primary-foreground shadow",
                   day !== selectedDate &&
@@ -205,7 +205,7 @@ export function AppointmentScheduler({
       </div>
 
       {/* time slots */}
-      <div className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l p-6">
+      <div className="w-full lg:w-60 border-t lg:border-t-0 lg:border-l p-6">
         <div className="flex justify-between mb-4">
           <span className="text-sm font-medium">{selectedDateLabel}</span>
 

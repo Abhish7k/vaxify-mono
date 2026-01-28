@@ -27,7 +27,6 @@ export const mockCenterData: CenterData = {
   email: "contact@apollohealth.com",
   operatingHours: {
     weekdays: "9:00 AM - 6:00 PM",
-    weekends: "9:00 AM - 2:00 PM",
   },
   vaccines: [
     { name: "Covishield", available: true, price: "₹780" },
