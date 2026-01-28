@@ -5,30 +5,67 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { User, Hospital } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 const RegisterPage = () => {
   return (
-    <div>
-      <div className="flex items-center justify-center gap-2 mb-5">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className=""
+    >
+      <motion.div
+        variants={itemVariants}
+        className="flex items-center justify-center gap-2 mb-5"
+      >
         <img src="/logo.svg" alt="VMS Logo" className="w-12 h-12 mb-0.5" />
-        {/* <h1 className="text-3xl font-bold text-indigo-600">VAXIFY</h1> */}
-      </div>
+      </motion.div>
 
-      <h2 className="text-xl font-semibold text-center text-slate-800 mb-2">
+      <motion.h2
+        variants={itemVariants}
+        className="text-xl font-semibold text-center text-slate-800 mb-2"
+      >
         Create an Account
-      </h2>
+      </motion.h2>
 
-      <p className="text-center text-slate-500 mb-8 text-sm">
+      <motion.p
+        variants={itemVariants}
+        className="text-center text-slate-500 mb-8 text-sm"
+      >
         Choose how you want to register
-      </p>
+      </motion.p>
 
-      <div className="grid gap-6">
-        {/* Register as User */}
+      <motion.div variants={itemVariants} className="grid gap-6">
+        {/* register as user  */}
         <Link to="/register/user">
-          <Card className="cursor-pointer border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all duration-300">
-            <CardHeader className="flex flex-row gap-4 items-start">
-              <User className="w-8 h-8 text-indigo-600" />
+          <Card className="cursor-pointer hover:shadow-md transition-all duration-300 group">
+            <CardHeader className="flex flex-row gap-4 items-center">
+              <img
+                src="/icons/profile.png"
+                alt=""
+                className="w-15 h-15 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300"
+              />
 
               <div className="space-y-1">
                 <CardTitle>Register as User</CardTitle>
@@ -41,11 +78,16 @@ const RegisterPage = () => {
           </Card>
         </Link>
 
-        {/* Register as Hospital Staff */}
+        {/* register as hospital staff */}
         <Link to="/register/staff">
-          <Card className="cursor-pointer border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all duration-300">
-            <CardHeader className="flex flex-row gap-4 items-start">
-              <Hospital className="w-8 h-8 text-indigo-600" />
+          <Card className="cursor-pointer hover:shadow-md transition-all duration-300 group">
+            <CardHeader className="flex flex-row gap-4 items-center">
+              <img
+                src="/icons/staff.png"
+                alt=""
+                className="w-15 h-15 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300"
+              />
+
               <div className="space-y-1">
                 <CardTitle>Register as Hospital Staff</CardTitle>
 
@@ -56,8 +98,8 @@ const RegisterPage = () => {
             </CardHeader>
           </Card>
         </Link>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
