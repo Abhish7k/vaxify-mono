@@ -1,16 +1,28 @@
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+import { FileDropzone } from "@/components/ui/file-dropzone";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface HospitalDetailsStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
+  setValue: UseFormSetValue<any>;
+  watch: UseFormWatch<any>;
 }
 
 export const HospitalDetailsStep = ({
   register,
   errors,
+  setValue,
+  watch,
 }: HospitalDetailsStepProps) => {
+  const documentUrl = watch("document");
+
   return (
     <section className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="space-y-2">
@@ -45,20 +57,19 @@ export const HospitalDetailsStep = ({
 
       <div className="space-y-2">
         <Label>Verification Document</Label>
-        <Input
-          type="file"
-          accept=".pdf,.jpg,.png"
-          className="cursor-pointer"
-          {...register("document")}
+
+        <FileDropzone
+          value={documentUrl}
+          onChange={(url) => {
+            setValue("document", url || "", { shouldValidate: true });
+          }}
         />
+
         {errors.document && (
-          <p className="text-sm text-red-500">
+          <p className="text-sm text-red-500 mt-1">
             {errors.document.message as string}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">
-          Upload hospital registration proof or authorization letter
-        </p>
       </div>
 
       {/* approval note */}

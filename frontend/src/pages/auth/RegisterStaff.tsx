@@ -57,12 +57,7 @@ const step2Schema = z
       .string()
       .min(3, "Hospital registration ID is required"),
 
-    document: z
-      .any()
-      .refine(
-        (files) => files?.length >= 1,
-        "Verification document is required",
-      ),
+    document: z.string().min(1, "Verification document is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -81,6 +76,8 @@ const RegisterStaff = () => {
     register,
     handleSubmit,
     trigger,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<StaffRegisterForm>({
     // we want switch the validation schema based on the current step
@@ -89,6 +86,9 @@ const RegisterStaff = () => {
 
     resolver: zodResolver(step === 1 ? step1Schema : step2Schema) as any,
     mode: "onSubmit",
+    defaultValues: {
+      document: "",
+    },
   });
 
   const onNext = async () => {
@@ -133,6 +133,7 @@ const RegisterStaff = () => {
         hospitalName,
         hospitalAddress,
         hospitalRegistrationId,
+        document,
       } = data;
 
       // payload to match the expected api structure
@@ -148,6 +149,7 @@ const RegisterStaff = () => {
           name: hospitalName,
           address: hospitalAddress,
           registrationId: hospitalRegistrationId,
+          documentUrl: document,
         },
       };
 
@@ -197,7 +199,12 @@ const RegisterStaff = () => {
 
           {/* step 2 - hospital details */}
           {step === 2 && (
-            <HospitalDetailsStep register={register} errors={errors} />
+            <HospitalDetailsStep
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              watch={watch}
+            />
           )}
 
           {/* actions */}
