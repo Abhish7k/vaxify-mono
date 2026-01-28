@@ -7,6 +7,7 @@ import {
   User,
   CalendarPlus,
   Syringe,
+  AlertTriangle,
   // Settings,
 } from "lucide-react";
 
@@ -68,6 +69,11 @@ export const DashboardRoleBasedNavigationLinks = {
           label: "All Appointments",
           path: "/staff/appointments",
           icon: Calendar,
+        },
+        {
+          label: "Stock Alerts",
+          path: "/staff/alerts",
+          icon: AlertTriangle,
         },
       ],
     },

@@ -28,6 +28,7 @@ import AdminProfilePage from "@/pages/admin/AdminProfile";
 import UserProfilePage from "@/pages/user/UserProfilePage";
 import StaffProfilePage from "@/pages/staff/StaffProfilePage";
 import StaffVaccinesPage from "@/pages/staff/StaffVaccinesPage";
+import LowStockAlertsPage from "@/pages/staff/LowStockAlertsPage";
 
 export const router = createBrowserRouter([
   {
@@ -144,6 +145,10 @@ export const router = createBrowserRouter([
           {
             path: "/staff/vaccines",
             element: <StaffVaccinesPage />,
+          },
+          {
+            path: "/staff/alerts",
+            element: <LowStockAlertsPage />,
           },
         ],
       },
