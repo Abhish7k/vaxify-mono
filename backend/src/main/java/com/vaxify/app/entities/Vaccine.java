@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,9 +35,19 @@ public class Vaccine {
 
     @Column(name = "type")
     private String type;
-    
+
     @Column(name = "manufacturer")
     private String manufacturer;
+
+    @Column(name = "stock")
+    private Integer stock;
+
+    @Column(name = "capacity")
+    private Integer capacity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 

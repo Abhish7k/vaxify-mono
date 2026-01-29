@@ -118,10 +118,23 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
             <Label htmlFor="type">Vaccine Type</Label>
             <Select
               disabled={loading}
-              value={newVaccine.type}
-              onValueChange={(value) =>
-                setNewVaccine({ ...newVaccine, type: value })
+              value={
+                [
+                  "Inactivated Virus",
+                  "Viral Vector",
+                  "mRNA",
+                  "Protein Subunit",
+                ].includes(newVaccine.type)
+                  ? newVaccine.type
+                  : "Other"
               }
+              onValueChange={(value) => {
+                if (value === "Other") {
+                  setNewVaccine({ ...newVaccine, type: "" });
+                } else {
+                  setNewVaccine({ ...newVaccine, type: value });
+                }
+              }}
             >
               <SelectTrigger id="type" className="w-full">
                 <SelectValue placeholder="Select type" />
@@ -134,8 +147,26 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
                 <SelectItem value="Viral Vector">Viral Vector</SelectItem>
                 <SelectItem value="mRNA">mRNA</SelectItem>
                 <SelectItem value="Protein Subunit">Protein Subunit</SelectItem>
+                <SelectItem value="Other">Other (Enter manually)</SelectItem>
               </SelectContent>
             </Select>
+
+            {/* show input if custom type is needed */}
+            {![
+              "Inactivated Virus",
+              "Viral Vector",
+              "mRNA",
+              "Protein Subunit",
+            ].includes(newVaccine.type) && (
+              <Input
+                placeholder="Enter Custom Vaccine Type"
+                value={newVaccine.type}
+                onChange={(e) =>
+                  setNewVaccine({ ...newVaccine, type: e.target.value })
+                }
+                className="mt-2"
+              />
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="manufacturer">Manufacturer</Label>

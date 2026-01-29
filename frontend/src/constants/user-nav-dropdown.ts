@@ -40,14 +40,14 @@ export const USER_NAV_DROPDOWN_ITEMS = {
       icon: LayoutDashboard,
     },
     {
+      name: "Center",
+      href: "/staff/hospital",
+      icon: Hospital,
+    },
+    {
       name: "Profile",
       href: "/staff/profile",
       icon: User,
-    },
-    {
-      name: "Center",
-      href: "/staff/center",
-      icon: Hospital,
     },
   ],
 

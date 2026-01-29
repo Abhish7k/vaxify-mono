@@ -22,8 +22,6 @@ public class StaffHospitalRegistrationDTO {
 
     private String phone;
 
-    // ===== HOSPITAL INFO =====
-
     @NotBlank(message = "Hospital name is required")
     private String hospitalName;
 
@@ -35,7 +33,6 @@ public class StaffHospitalRegistrationDTO {
 
     private String document;
 
-    // Optional (for future use)
     private String city;
     private String state;
     private String pincode;

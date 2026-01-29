@@ -15,6 +15,16 @@ export const vaccineApi = {
     return response.data;
   },
 
+  // get vaccines for logged-in staff's hospital
+  getMyVaccines: async (): Promise<Vaccine[]> => {
+    if (API_CONFIG.USE_MOCKS) {
+      // return same mocks for now
+      return [...mockVaccines];
+    }
+    const response = await api.get<Vaccine[]>("/vaccines/staff");
+    return response.data;
+  },
+
   // add new vaccine
   addVaccine: async (
     vaccine: Omit<Vaccine, "id" | "lastUpdated">,

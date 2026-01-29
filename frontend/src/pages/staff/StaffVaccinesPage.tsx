@@ -21,7 +21,7 @@ export default function StaffVaccinesPage() {
   const fetchVaccines = async () => {
     setLoading(true);
     try {
-      const data = await vaccineApi.getVaccines();
+      const data = await vaccineApi.getMyVaccines();
 
       setVaccines(data);
     } catch (error) {

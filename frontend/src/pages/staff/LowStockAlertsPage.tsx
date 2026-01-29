@@ -20,7 +20,7 @@ export default function LowStockAlertsPage() {
   const fetchVaccines = async () => {
     setLoading(true);
     try {
-      const data = await vaccineApi.getVaccines();
+      const data = await vaccineApi.getMyVaccines();
       setVaccines(data);
     } catch (error) {
       console.error("Fetch failed", error);
@@ -119,8 +119,6 @@ export default function LowStockAlertsPage() {
           {criticalVaccines.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                {/* <AlertOctagon className="h-6 w-6" /> */}
-
                 <h2 className="text-xl font-medium">Critical (&lt; 20%)</h2>
               </div>
 
@@ -141,8 +139,6 @@ export default function LowStockAlertsPage() {
           {warningVaccines.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                {/* <AlertTriangle className="h-6 w-6" /> */}
-
                 <h2 className="text-xl font-medium">Warnings (&lt; 40%)</h2>
               </div>
 

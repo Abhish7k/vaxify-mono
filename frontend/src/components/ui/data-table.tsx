@@ -59,7 +59,11 @@ export function DataTable<TData, TValue>({
     [],
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialVisibility);
+    React.useState<VisibilityState>({
+      capacity: false,
+      lastUpdated: false,
+      ...initialVisibility,
+    });
   const [rowSelection, setRowSelection] = React.useState({});
 
   const handleVisibilityChange = (updater: Updater<VisibilityState>) => {
@@ -90,7 +94,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-4">
-      {/* Search & Actions Bar */}
+      {/* search and cols selector */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -144,7 +148,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      {/* Table Container */}
+      {/* table container */}
       <div className="rounded-xl border bg-card/50 backdrop-blur-sm overflow-hidden shadow-sm">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
           <Table>
@@ -224,7 +228,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      {/* Pagination & Stats */}
+      {/* pagination and stats */}
       <div className="hidden flex-col sm:flex-row items-center justify-between gap-4 py-2 px-1">
         <div className="text-sm text-muted-foreground order-2 sm:order-1">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}

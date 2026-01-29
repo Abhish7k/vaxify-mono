@@ -17,7 +17,7 @@ export const hospitalApi = {
       id: String(h.id),
       name: h.name,
       address: h.address,
-      availableVaccines: [], // will be fetched separately or updated in DTO later
+      availableVaccines: [], // will be fetched separately or updated in dto later
     }));
   },
 

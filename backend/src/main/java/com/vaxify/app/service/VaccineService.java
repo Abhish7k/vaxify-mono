@@ -5,10 +5,17 @@ import com.vaxify.app.dtos.*;
 
 public interface VaccineService {
 
-    VaccineResponseDTO createVaccine(VaccineRequestDTO dto);
-    VaccineResponseDTO updateVaccine(Long id, VaccineRequestDTO dto);
-    void deleteVaccine(Long id);
+    VaccineResponseDTO createVaccine(VaccineRequestDTO dto, String staffEmail);
+
+    VaccineResponseDTO updateVaccine(Long id, VaccineRequestDTO dto, String staffEmail);
+
+    void deleteVaccine(Long id, String staffEmail);
 
     VaccineResponseDTO getVaccineById(Long id);
+
+    // for admin or general listing
     List<VaccineResponseDTO> getAllVaccines();
+
+    // for staff dashboard
+    List<VaccineResponseDTO> getVaccinesByStaff(String staffEmail);
 }

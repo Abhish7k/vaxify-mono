@@ -1,4 +1,5 @@
 package com.vaxify.app.dtos;
+
 import lombok.*;
 
 @Data
@@ -11,4 +12,7 @@ public class VaccineResponseDTO {
     private String name;
     private String type;
     private String manufacturer;
+    private Integer stock;
+    private Integer capacity;
+    private String lastUpdated;
 }

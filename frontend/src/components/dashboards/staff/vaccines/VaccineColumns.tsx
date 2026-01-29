@@ -82,14 +82,19 @@ export const getVaccineColumns = ({
     },
     cell: ({ row }) => {
       const stock = parseFloat(row.getValue("stock"));
+      const capacity = parseFloat(row.getValue("capacity"));
+      const percentage = capacity > 0 ? (stock / capacity) * 100 : 0;
+
       return (
         <div className="flex items-center gap-2 font-mono">
-          {stock < 100 && stock > 0 && (
-            <TrendingDown className="h-4 w-4 text-amber-500" />
-          )}
-          {stock >= 100 && <TrendingUp className="h-4 w-4 text-emerald-500" />}
-          {stock === 0 && (
+          {stock === 0 ? (
             <AlertTriangle className="h-4 w-4 text-destructive" />
+          ) : percentage < 20 ? (
+            <AlertTriangle className="h-4 w-4 text-red-500" />
+          ) : percentage < 50 ? (
+            <TrendingDown className="h-4 w-4 text-amber-500" />
+          ) : (
+            <TrendingUp className="h-4 w-4 text-emerald-500" />
           )}
           {stock}
         </div>
@@ -120,20 +125,29 @@ export const getVaccineColumns = ({
     header: "Status",
     cell: ({ row }) => {
       const stock = parseFloat(row.getValue("stock"));
-      if (stock > 100) {
+      const capacity = parseFloat(row.getValue("capacity"));
+      const percentage = capacity > 0 ? (stock / capacity) * 100 : 0;
+
+      if (stock === 0) {
+        return <Badge variant="destructive">Out Of Stock</Badge>;
+      } else if (percentage < 20) {
         return (
-          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">
-            In Stock
+          <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">
+            Critical
           </Badge>
         );
-      } else if (stock > 0) {
+      } else if (percentage < 50) {
         return (
           <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">
             Low Stock
           </Badge>
         );
       } else {
-        return <Badge variant="destructive">Out Of Stock</Badge>;
+        return (
+          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">
+            In Stock
+          </Badge>
+        );
       }
     },
   },
@@ -153,10 +167,21 @@ export const getVaccineColumns = ({
       );
     },
     cell: ({ row }) => {
-      const date = new Date(row.getValue("lastUpdated"));
+      const val = row.getValue("lastUpdated") as string;
+      if (!val) return <div className="text-xs text-muted-foreground">N/A</div>;
+
+      const date = new Date(val);
+      if (isNaN(date.getTime())) {
+        return <div className="text-xs text-muted-foreground">N/A</div>;
+      }
+
       return (
         <div className="text-xs text-muted-foreground whitespace-nowrap">
-          {date.toLocaleDateString()}
+          {date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          })}
         </div>
       );
     },

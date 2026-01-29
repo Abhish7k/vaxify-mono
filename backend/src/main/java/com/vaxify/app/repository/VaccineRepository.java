@@ -6,7 +6,10 @@ import com.vaxify.app.entities.Vaccine;
 
 import org.springframework.stereotype.Repository;
 
+import com.vaxify.app.entities.Hospital;
+import java.util.List;
+
 @Repository
-public interface  VaccineRepository extends JpaRepository<Vaccine, Long> {
-    
+public interface VaccineRepository extends JpaRepository<Vaccine, Long> {
+    List<Vaccine> findByHospital(Hospital hospital);
 }

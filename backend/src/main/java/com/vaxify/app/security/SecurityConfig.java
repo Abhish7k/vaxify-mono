@@ -32,20 +32,20 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/hospitals/register").permitAll()
                                                 .requestMatchers("/api/files/**").permitAll()
 
-                                                // ---------- SLOT MANAGEMENT ----------
-                                                // STAFF can create / update / delete
+                                                // slot management
+                                                // staff can create / update / delete
                                                 .requestMatchers("/api/slots/staff/**")
                                                 .hasRole("STAFF")
 
-                                                // STAFF can create / update / delete
+                                                // staff can create / update / delete
                                                 .requestMatchers(HttpMethod.GET, "/api/slots")
                                                 .hasAnyRole("USER", "STAFF", "ADMIN")
 
-                                                // ---------- VACCINE MANAGEMENT ----------
-                                                // STAFF can create / update / delete
+                                                // vaccine management
+                                                // staff can create / update / delete
                                                 .requestMatchers("/api/vaccines/staff/**").hasRole("STAFF")
 
-                                                // STAFF can create / update / delete
+                                                // staff can create / update / delete
                                                 .requestMatchers(HttpMethod.GET, "/api/vaccines/**")
                                                 .hasAnyRole("USER", "STAFF", "ADMIN")
                                                 .requestMatchers("/api/users/**").authenticated()
