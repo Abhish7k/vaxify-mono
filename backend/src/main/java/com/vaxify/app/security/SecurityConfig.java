@@ -24,10 +24,12 @@ public class SecurityConfig {
                         throws Exception {
 
                 http
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/api/auth/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/hospitals").permitAll()
                                                 .requestMatchers("/api/hospitals/register").permitAll()
-                                                .requestMatchers("/auth/**").permitAll()
                                                 .requestMatchers("/api/files/**").permitAll()
                                                 // ---------- SLOT MANAGEMENT ----------
                                                 // STAFF can create / update / delete
@@ -43,7 +45,7 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.GET, "/api/vaccines/**")
                                                 .hasAnyRole("USER", "STAFF", "ADMIN")
                                                 .requestMatchers("/api/users/**").authenticated()
-                                                .requestMatchers("/appointments**").authenticated()
+                                                .requestMatchers("/api/appointments/**").authenticated()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session.sessionCreationPolicy(
                                                 SessionCreationPolicy.STATELESS))
@@ -52,6 +54,18 @@ public class SecurityConfig {
                                                 UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
+        }
+
+        @Bean
+        public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+                org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+                configuration.setAllowedOrigins(java.util.List.of("http://localhost:5173", "http://localhost:3000"));
+                configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "X-Requested-With"));
+                configuration.setAllowCredentials(true);
+                org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
         }
 
         @Bean

@@ -1,7 +1,6 @@
-import api from "@/api/axios";
 import { useAuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "@/api/auth.api";
+import { loginApi, registerUserApi, registerStaffApi } from "@/api/auth.api";
 import type { Role } from "@/types/auth";
 
 // custom hook for the components to use
@@ -10,13 +9,13 @@ export const useAuth = () => {
   const { user, setAuthUser } = useAuthContext();
 
   const registerUser = async (registerUserData: unknown) => {
-    await api.post("/auth/register/user", registerUserData);
+    await registerUserApi(registerUserData);
 
     navigate("/login");
   };
 
   const registerStaff = async (registerStaffData: unknown) => {
-    await api.post("/auth/register/staff", registerStaffData);
+    await registerStaffApi(registerStaffData);
 
     navigate("/login");
   };

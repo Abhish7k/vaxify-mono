@@ -48,8 +48,6 @@ const LoginForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       await login(formData.email, formData.password);
 
       toast.success("Logged in successfully", {
@@ -58,12 +56,15 @@ const LoginForm: React.FC = () => {
           color: "#0f7a28",
         },
       });
+    } catch (error: any) {
+      console.error("Sign in error: ", error);
 
-      console.log(formData);
-    } catch (error) {
-      console.log("Sign in error: ", error);
+      const message =
+        error.response?.status === 401
+          ? "Invalid email or password"
+          : "Invalid credentials. Please try again.";
 
-      toast.error("Login failed. Please try again.", {
+      toast.error(message, {
         style: {
           backgroundColor: "#ffe5e5",
           color: "#b00000",

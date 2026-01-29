@@ -9,7 +9,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
-  if (token) {
+  // dont send token for auth endpoints (login/signup)
+  const isAuthPath = config.url?.includes("/auth/");
+
+  if (token && !isAuthPath) {
     config.headers.Authorization = `Bearer ${token}`;
   }
 

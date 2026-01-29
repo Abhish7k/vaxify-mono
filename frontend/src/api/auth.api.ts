@@ -8,7 +8,7 @@ export const loginApi = async (
   password: string,
 ): Promise<LoginResponse> => {
   // check config
-  if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.AUTH) {
+  if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.AUTH) {
     return mockLoginApi(email);
   }
 
@@ -18,29 +18,33 @@ export const loginApi = async (
     password,
   });
 
+  // Normalize role to lowercase for frontend compatibility
+  if (response.data?.user) {
+    response.data.user.role = response.data.user.role.toLowerCase() as any;
+  }
+
   return response.data;
 };
 
-export const registerUserApi = async (registerUserData: unknown) => {
-  if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.AUTH) {
+export const registerUserApi = async (registerUserData: any) => {
+  if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.AUTH) {
     console.log("[Mock API] Registering user...", registerUserData);
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
     return;
   }
 
-  await api.post("/auth/register/user", registerUserData);
+  await api.post("/auth/signup", {
+    ...registerUserData,
+    role: "USER",
+  });
 };
 
-export const registerStaffApi = async (registerStaffData: unknown) => {
-  if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.AUTH) {
+export const registerStaffApi = async (registerStaffData: any) => {
+  if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.AUTH) {
     console.log("[Mock API] Registering staff...", registerStaffData);
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
     return;
   }
 
-  await api.post("/auth/register/staff", registerStaffData);
+  await api.post("/hospitals/register", registerStaffData);
 };

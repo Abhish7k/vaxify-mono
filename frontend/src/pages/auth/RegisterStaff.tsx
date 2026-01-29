@@ -133,24 +133,17 @@ const RegisterStaff = () => {
         hospitalName,
         hospitalAddress,
         hospitalRegistrationId,
-        document,
       } = data;
 
-      // payload to match the expected api structure
+      // payload to match the expected StaffHospitalRegistrationDTO structure
       const registerStaffPayload = {
-        user: {
-          firstName,
-          lastName,
-          email,
-          phone,
-          password,
-        },
-        hospital: {
-          name: hospitalName,
-          address: hospitalAddress,
-          registrationId: hospitalRegistrationId,
-          documentUrl: document,
-        },
+        staffName: `${firstName} ${lastName}`,
+        email,
+        password,
+        phone,
+        hospitalName,
+        hospitalAddress,
+        licenseNumber: hospitalRegistrationId, // backend calls it licenseNumber
       };
 
       await registerStaff(registerStaffPayload);

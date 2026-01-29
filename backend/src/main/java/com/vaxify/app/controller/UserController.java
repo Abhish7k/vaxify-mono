@@ -1,4 +1,5 @@
 package com.vaxify.app.controller;
+
 import org.springframework.security.core.Authentication;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import com.vaxify.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -29,6 +30,5 @@ public class UserController {
 
         return ResponseEntity.ok(userDTO);
     }
-    
-    
+
 }

@@ -45,8 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  console.log("from auth context after use effect: ", user);
-
   return (
     <AuthContext.Provider value={{ user, setAuthUser: setUser, loading }}>
       {!loading && children}

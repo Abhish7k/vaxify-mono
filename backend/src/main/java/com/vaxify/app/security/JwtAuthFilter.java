@@ -18,44 +18,46 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+        private final JwtUtil jwtUtil;
+        private final UserDetailsService userDetailsService;
 
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+        @Override
+        protected void doFilterInternal(
+                        HttpServletRequest request,
+                        HttpServletResponse response,
+                        FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+                String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                        filterChain.doFilter(request, response);
+                        return;
+                }
+
+                String token = authHeader.substring(7);
+
+                try {
+                        String email = jwtUtil.extractEmail(token);
+
+                        if (email != null &&
+                                        SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                                userDetails,
+                                                null,
+                                                userDetails.getAuthorities());
+
+                                SecurityContextHolder.getContext()
+                                                .setAuthentication(authentication);
+                        }
+                } catch (Exception e) {
+                        // if token is invalid or expired, just log it and continue.
+                        // do not set authentication in context.
+                        logger.error("Could not set user authentication in security context", e);
+                }
+
+                filterChain.doFilter(request, response);
         }
-
-        String token = authHeader.substring(7);
-
-        String email = jwtUtil.extractEmail(token);
-
-        if (email != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(email);
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
-        }
-
-        filterChain.doFilter(request, response);
-    }
 }

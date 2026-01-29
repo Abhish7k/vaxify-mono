@@ -67,8 +67,6 @@ const RegisterUser = () => {
           color: "#0f7a28",
         },
       });
-
-      console.log(formData);
     } catch (error) {
       console.log("Register error: ", error);
 
@@ -81,8 +79,6 @@ const RegisterUser = () => {
     } finally {
       setIsLoading(false);
     }
-
-    console.log(formData);
   };
 
   return (

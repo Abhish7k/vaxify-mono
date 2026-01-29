@@ -20,6 +20,8 @@ public class StaffHospitalRegistrationDTO {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    private String phone;
+
     // ===== HOSPITAL INFO =====
 
     @NotBlank(message = "Hospital name is required")
@@ -35,5 +37,5 @@ public class StaffHospitalRegistrationDTO {
     private String city;
     private String state;
     private String pincode;
-    
+
 }

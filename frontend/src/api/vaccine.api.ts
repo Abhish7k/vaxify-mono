@@ -7,7 +7,7 @@ export const vaccineApi = {
   // get all vaccines
   getVaccines: async (): Promise<Vaccine[]> => {
     // check config for mock mode
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.VACCINE) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.VACCINE) {
       console.log("[Mock API] Fetching vaccines...");
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -31,7 +31,7 @@ export const vaccineApi = {
   addVaccine: async (
     vaccine: Omit<Vaccine, "id" | "lastUpdated">,
   ): Promise<Vaccine> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.VACCINE) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.VACCINE) {
       console.log("[Mock API] Adding vaccine...", vaccine);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -48,13 +48,13 @@ export const vaccineApi = {
       return newVaccine;
     }
 
-    const response = await api.post<Vaccine>("/vaccines", vaccine);
+    const response = await api.post<Vaccine>("/vaccines/staff", vaccine);
     return response.data;
   },
 
   // update stock
   updateStock: async (request: UpdateStockRequest): Promise<Vaccine> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.VACCINE) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.VACCINE) {
       console.log("[Mock API] Updating stock...", request);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -76,9 +76,8 @@ export const vaccineApi = {
       return mockVaccines[index];
     }
 
-    const response = await api.patch<Vaccine>(
-      `/vaccines/${request.vaccineId}/stock`,
-
+    const response = await api.put<Vaccine>(
+      `/vaccines/staff/${request.vaccineId}`,
       { stock: request.quantity },
     );
 
@@ -87,7 +86,7 @@ export const vaccineApi = {
 
   // delete vaccine
   deleteVaccine: async (id: string): Promise<void> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.VACCINE) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.VACCINE) {
       console.log("[Mock API] Deleting vaccine...", id);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -103,12 +102,12 @@ export const vaccineApi = {
       return;
     }
 
-    await api.delete(`/vaccines/${id}`);
+    await api.delete(`/vaccines/staff/${id}`);
   },
 
   // get low stock alerts
   getLowStockAlerts: async (): Promise<Vaccine[]> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.VACCINE) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.VACCINE) {
       // simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 500));
 

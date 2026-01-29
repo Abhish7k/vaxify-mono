@@ -20,7 +20,7 @@ export const hospitalApi = {
 
   // get hospital by id
   getHospitalById: async (id: string): Promise<Center | undefined> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.HOSPITAL) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.HOSPITAL) {
       console.log(`[mock api] fetching hospital details for ${id}...`);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -35,7 +35,7 @@ export const hospitalApi = {
 
   // register new hospital
   registerHospital: async (hospitalData: unknown) => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.HOSPITAL) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.HOSPITAL) {
       console.log("[mock api] registering new hospital...", hospitalData);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));

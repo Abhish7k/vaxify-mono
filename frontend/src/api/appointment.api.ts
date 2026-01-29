@@ -9,7 +9,7 @@ import type {
 export const appointmentApi = {
   // get available slots for a center on a specific date
   getSlots: async (centerId: string, date: string): Promise<TimeSlot[]> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.APPOINTMENT) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.APPOINTMENT) {
       console.log(
         `[mock api] fetching slots for center ${centerId} on ${date}...`,
       );
@@ -32,8 +32,12 @@ export const appointmentApi = {
       return slots;
     }
 
+    // Backend: /api/slots/hospital/{hospitalId}/date?date=YYYY-MM-DD
     const response = await api.get<TimeSlot[]>(
-      `/appointments/slots?centerId=${centerId}&date=${date}`,
+      `/slots/hospital/${centerId}/date`,
+      {
+        params: { date },
+      },
     );
 
     return response.data;
@@ -43,7 +47,7 @@ export const appointmentApi = {
   bookAppointment: async (
     data: BookAppointmentRequest,
   ): Promise<Appointment> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.APPOINTMENT) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.APPOINTMENT) {
       console.log("[mock api] booking appointment...", data);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -75,7 +79,7 @@ export const appointmentApi = {
 
   // get current user's appointments
   getMyAppointments: async (): Promise<Appointment[]> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.APPOINTMENT) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.APPOINTMENT) {
       console.log("[mock api] fetching user appointments...");
 
       await new Promise((resolve) => setTimeout(resolve, 800));
@@ -90,7 +94,7 @@ export const appointmentApi = {
 
   // cancel appointment
   cancelAppointment: async (appointmentId: string): Promise<void> => {
-    if (API_CONFIG.USE_MOCKS || API_CONFIG.MODULES.APPOINTMENT) {
+    if (API_CONFIG.USE_MOCKS && API_CONFIG.MODULES.APPOINTMENT) {
       console.log(`[mock api] cancelling appointment ${appointmentId}...`);
 
       await new Promise((resolve) => setTimeout(resolve, 500));

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/hospitals")
+@RequestMapping("/api/admin/hospitals")
 @RequiredArgsConstructor
 public class AdminHospitalController {
 
@@ -33,6 +33,5 @@ public class AdminHospitalController {
     public HospitalResponse rejectHospital(@PathVariable Long id) {
         return hospitalService.rejectHospital(id);
     }
-
 
 }
