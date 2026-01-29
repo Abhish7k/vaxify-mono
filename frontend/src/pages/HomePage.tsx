@@ -1,6 +1,6 @@
-import { HeroSectionComponent } from "@/components/landing/hero-section-1";
-
-import { HowItWorks } from "@/components/landing/how-it-works";
+import { HeroSectionComponent } from "@/components/landing/HeroSection";
+import { HowItWorks } from "@/components/landing/HowItWorksSection";
+import { Features } from "@/components/landing/FeaturesSection";
 
 const HomePage = () => {
   return (
@@ -8,6 +8,8 @@ const HomePage = () => {
       <HeroSectionComponent />
 
       <HowItWorks />
+
+      <Features />
     </div>
   );
 };
