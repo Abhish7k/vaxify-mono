@@ -8,7 +8,7 @@ import {
   CalendarPlus,
   Syringe,
   AlertTriangle,
-  // Settings,
+  Clock,
 } from "lucide-react";
 
 export const DashboardRoleBasedNavigationLinks = {
@@ -61,6 +61,11 @@ export const DashboardRoleBasedNavigationLinks = {
           icon: LayoutDashboard,
         },
         {
+          label: "Slot Management",
+          path: "/staff/slots",
+          icon: Clock,
+        },
+        {
           label: "Vaccines",
           path: "/staff/vaccines",
           icon: Syringe,
@@ -75,11 +80,6 @@ export const DashboardRoleBasedNavigationLinks = {
           path: "/staff/alerts",
           icon: AlertTriangle,
         },
-        {
-          label: "My Hospital",
-          path: "/staff/hospital",
-          icon: Hospital,
-        },
       ],
     },
     {
@@ -90,11 +90,11 @@ export const DashboardRoleBasedNavigationLinks = {
           path: "/staff/profile",
           icon: User,
         },
-        // {
-        //   label: "Settings",
-        //   path: "/staff/settings",
-        //   icon: Settings,
-        // },
+        {
+          label: "My Hospital",
+          path: "/staff/hospital",
+          icon: Hospital,
+        },
       ],
     },
   ],

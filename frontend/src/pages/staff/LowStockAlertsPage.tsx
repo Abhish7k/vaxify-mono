@@ -24,7 +24,12 @@ export default function LowStockAlertsPage() {
       setVaccines(data);
     } catch (error) {
       console.error("Fetch failed", error);
-      toast.error("Failed to fetch vaccines");
+      toast.error("Failed to fetch vaccines", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -67,7 +72,7 @@ export default function LowStockAlertsPage() {
   const hasAlerts = criticalVaccines.length > 0 || warningVaccines.length > 0;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto px-5">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">

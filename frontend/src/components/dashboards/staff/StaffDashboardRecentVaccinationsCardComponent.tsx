@@ -4,12 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Avvvatars from "avvvatars-react";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import type { Appointment } from "@/types/appointment";
 
-export const StaffDashboardRecentVaccinationsCardComponent = () => {
+interface StaffDashboardRecentVaccinationsCardComponentProps {
+  appointments: Appointment[];
+  loading: boolean;
+}
+
+export const StaffDashboardRecentVaccinationsCardComponent = ({
+  appointments,
+  loading,
+}: StaffDashboardRecentVaccinationsCardComponentProps) => {
+  // Filter for completed status and slice for recent 4
+  const recentList = appointments
+    .filter((a) => a.status === "COMPLETED")
+    .slice(0, 4);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Recent Vaccinations</CardTitle>
+        <CardTitle className="font-medium">Recent Vaccinations</CardTitle>
 
         <Link to="/staff/appointments">
           <Button
@@ -24,58 +38,57 @@ export const StaffDashboardRecentVaccinationsCardComponent = () => {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {recentVaccinations.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between pb-5 border-b border-dashed last:border-none"
-          >
-            <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src={""} />
-
-                <AvatarFallback>
-                  <Avvvatars value={item.patient} style="shape" />
-                </AvatarFallback>
-              </Avatar>
-
-              <div>
-                <p className="text-sm font-medium">{item.patient}</p>
-                <p className="text-xs text-muted-foreground">{item.vaccine}</p>
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 pb-5 border-b border-dashed last:border-none animate-pulse"
+            >
+              <div className="h-10 w-10 rounded-full bg-muted" />
+              <div className="space-y-2 flex-1">
+                <div className="h-4 w-24 bg-muted rounded" />
+                <div className="h-3 w-16 bg-muted rounded" />
               </div>
             </div>
-
-            <p className="text-xs text-muted-foreground">{item.date}</p>
+          ))
+        ) : recentList.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground text-sm italic">
+            No recent vaccinations.
           </div>
-        ))}
+        ) : (
+          recentList.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between pb-5 border-b border-dashed last:border-none"
+            >
+              <div className="flex items-center gap-3 text-left">
+                <Avatar>
+                  <AvatarImage src={""} />
+                  <AvatarFallback>
+                    <Avvvatars
+                      value={item.patientName || "User"}
+                      style="shape"
+                    />
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">
+                    {item.patientName}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {item.vaccine || item.vaccineName}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-[10px] text-muted-foreground font-mono">
+                {item.date}
+              </p>
+            </div>
+          ))
+        )}
       </CardContent>
     </Card>
   );
 };
-
-// Mock data
-const recentVaccinations = [
-  {
-    id: 1,
-    patient: "Suresh Patel",
-    vaccine: "Covishield",
-    date: "21-01-2026",
-  },
-  {
-    id: 2,
-    patient: "Pooja Mehta",
-    vaccine: "Covaxin",
-    date: "21-01-2026",
-  },
-  {
-    id: 3,
-    patient: "Amit Kumar",
-    vaccine: "Covishield",
-    date: "20-01-2026",
-  },
-  {
-    id: 4,
-    patient: "Kiran Rao",
-    vaccine: "Covaxin",
-    date: "20-01-2026",
-  },
-];

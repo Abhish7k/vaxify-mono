@@ -73,4 +73,32 @@ export const hospitalApi = {
     const response = await api.put<any>("/hospitals/my", data);
     return response.data;
   },
+
+  // admin
+  getAdminHospitals: async (): Promise<any[]> => {
+    if (API_CONFIG.USE_MOCKS) {
+      // return mocks or empty
+      return [];
+    }
+    const response = await api.get<any[]>("/admin/hospitals");
+    // map to ensure types
+    return response.data.map((h) => ({
+      ...h,
+      id: String(h.id),
+    }));
+  },
+
+  approveHospital: async (id: string): Promise<void> => {
+    if (API_CONFIG.USE_MOCKS) {
+      return;
+    }
+    await api.put(`/admin/hospitals/approve/${id}`);
+  },
+
+  rejectHospital: async (id: string): Promise<void> => {
+    if (API_CONFIG.USE_MOCKS) {
+      return;
+    }
+    await api.put(`/admin/hospitals/reject/${id}`);
+  },
 };

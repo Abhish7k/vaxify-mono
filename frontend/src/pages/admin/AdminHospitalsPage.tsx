@@ -1,8 +1,8 @@
 import AdminHospitalsHeaderSection from "@/components/admin/hospitals-page/AdminHospitalsHeaderSection";
 import AdminHospitalsListSection from "@/components/admin/hospitals-page/AdminHospitalsListSection";
 
-import { mockHospitals } from "@/components/admin/hospitals-page/mockdata";
-import { useState } from "react";
+import { hospitalApi } from "@/api/hospital.api";
+import { useEffect, useState } from "react";
 
 import type {
   AdminHospital,
@@ -13,29 +13,72 @@ import { toast } from "sonner";
 
 const AdminHospitalsPage = () => {
   const [activeStatus, setActiveStatus] = useState<HospitalStatus>("PENDING");
+  const [hospitals, setHospitals] = useState<AdminHospital[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [hospitals] = useState<AdminHospital[]>(mockHospitals);
+  const fetchHospitals = async () => {
+    setLoading(true);
 
-  const handleApproveHospital = (hospital: AdminHospital) => {
-    console.log("Approve:", hospital.id);
-
-    toast.success("Approved hospital successfully", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+    try {
+      const data = await hospitalApi.getAdminHospitals();
+      setHospitals(data);
+    } catch (error) {
+      toast.error("Failed to load hospitals", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleRejectHospital = (hospital: AdminHospital) => {
-    console.log("Reject:", hospital.id);
+  useEffect(() => {
+    fetchHospitals();
+  }, []);
 
-    toast.error("Rejected hospital successfully", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+  const handleApproveHospital = async (hospital: AdminHospital) => {
+    try {
+      await hospitalApi.approveHospital(hospital.id);
+      toast.success("Approved hospital successfully", {
+        style: {
+          backgroundColor: "#e7f9ed",
+          color: "#0f7a28",
+        },
+      });
+
+      fetchHospitals(); // refresh
+    } catch (error) {
+      toast.error("Failed to approve hospital", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    }
+  };
+
+  const handleRejectHospital = async (hospital: AdminHospital) => {
+    try {
+      await hospitalApi.rejectHospital(hospital.id);
+
+      toast.success("Rejected hospital successfully", {
+        style: {
+          backgroundColor: "#e7f9ed",
+          color: "#0f7a28",
+        },
+      });
+
+      fetchHospitals(); // refresh
+    } catch (error) {
+      toast.error("Failed to reject hospital", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    }
   };
 
   return (
@@ -53,6 +96,7 @@ const AdminHospitalsPage = () => {
       <AdminHospitalsListSection
         hospitals={hospitals}
         activeStatus={activeStatus}
+        isLoading={loading}
         onApproveHospital={handleApproveHospital}
         onRejectHospital={handleRejectHospital}
       />

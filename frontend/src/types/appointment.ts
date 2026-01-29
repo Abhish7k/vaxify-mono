@@ -1,4 +1,11 @@
-export type AppointmentStatus = "scheduled" | "completed" | "cancelled";
+export type AppointmentStatus =
+  | "scheduled"
+  | "completed"
+  | "cancelled"
+  | "BOOKED"
+  | "COMPLETED"
+  | "CANCELLED"
+  | "UPCOMING";
 
 export interface Appointment {
   id: string;
@@ -14,6 +21,13 @@ export interface Appointment {
   centerName?: string;
   centerAddress?: string;
   vaccineName?: string;
+  vaccine?: string;
+  timeSlot?: string;
+
+  // patient details (for staff/admin)
+  patientName?: string;
+  patientPhone?: string;
+  patientEmail?: string;
 }
 
 export interface BookAppointmentRequest {

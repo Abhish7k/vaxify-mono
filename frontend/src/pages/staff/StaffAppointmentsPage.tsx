@@ -1,43 +1,99 @@
-import { mockStaffAppointments } from "@/components/appointment/staff/mockdata";
 import StaffAppointmentsHeaderSection from "@/components/appointment/staff/StaffAppointmentsHeaderSection";
 import StaffAppointmentsListSection, {
   type StaffAppointment,
 } from "@/components/appointment/staff/StaffAppointmentsListSection";
 import type { StaffAppointmentStatus } from "@/components/appointment/staff/StaffAppointmentsTabsSection";
 import StaffAppointmentsTabsSection from "@/components/appointment/staff/StaffAppointmentsTabsSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { hospitalApi } from "@/api/hospital.api";
+import { appointmentApi } from "@/api/appointment.api";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
 
 export default function StaffAppointmentsPage() {
   const [activeStatus, setActiveStatus] =
     useState<StaffAppointmentStatus>("UPCOMING");
 
-  // const [appointments, setAppointments] = useState<StaffAppointment[]>(mockStaffAppointments);
+  const [appointments, setAppointments] = useState<StaffAppointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  const handleMarkCompleted = (appointment: StaffAppointment) => {
-    console.log("Mark completed:", appointment.id);
+  // Dialog state
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<
+    "complete" | "cancel" | null
+  >(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<StaffAppointment | null>(null);
 
-    toast.success("Marked appointment as completed", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const hospital = await hospitalApi.getMyHospital();
+      if (!hospital) {
+        return;
+      }
+
+      const data = await appointmentApi.getStaffAppointments(hospital.id);
+      setAppointments(data as unknown as StaffAppointment[]);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load appointments");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCancelAppointment = (appointment: StaffAppointment) => {
-    console.log("Mark completed:", appointment.id);
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
-    toast.success("Cancelled appointment successfully", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+  const handleActionRequest = (
+    appointment: StaffAppointment,
+    action: "complete" | "cancel",
+  ) => {
+    setSelectedAppointment(appointment);
+    setPendingAction(action);
+    setIsAlertOpen(true);
+  };
+
+  const confirmAction = async () => {
+    if (!selectedAppointment || !pendingAction) return;
+
+    try {
+      setActionLoading(true);
+      if (pendingAction === "complete") {
+        await appointmentApi.completeAppointment(selectedAppointment.id);
+        toast.success("Appointment marked as completed");
+      } else {
+        await appointmentApi.cancelAppointment(selectedAppointment.id);
+        toast.success("Appointment cancelled successfully");
+      }
+      fetchAppointments();
+    } catch (error) {
+      toast.error(
+        `Failed to ${pendingAction === "complete" ? "complete" : "cancel"} appointment`,
+      );
+    } finally {
+      setActionLoading(false);
+      setIsAlertOpen(false);
+      setPendingAction(null);
+      setSelectedAppointment(null);
+    }
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 px-2 animate-in fade-in slide-in-from-bottom-10 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <StaffAppointmentsHeaderSection />
 
       <StaffAppointmentsTabsSection
@@ -45,14 +101,64 @@ export default function StaffAppointmentsPage() {
         onChange={setActiveStatus}
       />
 
-      <StaffAppointmentsListSection
-        appointments={mockStaffAppointments}
-        activeStatus={activeStatus}
-        onMarkCompleted={(appointment) => handleMarkCompleted(appointment)}
-        onCancelAppointment={(appointment) =>
-          handleCancelAppointment(appointment)
-        }
-      />
+      {loading ? (
+        <div className="p-10 text-center text-muted-foreground">
+          <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+          Loading appointments...
+        </div>
+      ) : (
+        <StaffAppointmentsListSection
+          appointments={appointments}
+          activeStatus={activeStatus}
+          onMarkCompleted={(appointment) =>
+            handleActionRequest(appointment, "complete")
+          }
+          onCancelAppointment={(appointment) =>
+            handleActionRequest(appointment, "cancel")
+          }
+        />
+      )}
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingAction === "complete"
+                ? "Complete Appointment?"
+                : "Cancel Appointment?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingAction === "complete"
+                ? `Are you sure you want to mark the appointment for ${selectedAppointment?.patientName} as completed? This will deduct 1 unit from your vaccine inventory.`
+                : `Are you sure you want to cancel the appointment for ${selectedAppointment?.patientName}? This action cannot be undone.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={actionLoading}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmAction();
+              }}
+              disabled={actionLoading}
+              className={
+                pendingAction === "cancel"
+                  ? "bg-destructive text-white hover:bg-destructive/90"
+                  : "bg-emerald-600 text-white hover:bg-emerald-700"
+              }
+            >
+              {actionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Confirm"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

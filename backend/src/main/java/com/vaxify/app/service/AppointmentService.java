@@ -13,4 +13,8 @@ public interface AppointmentService {
     void cancelAppointment(Long appointmentId, String userEmail);
 
     AppointmentResponse getAppointmentById(Long id);
+
+    List<AppointmentResponse> getAppointmentsByHospital(Long hospitalId);
+
+    void completeAppointment(Long appointmentId);
 }

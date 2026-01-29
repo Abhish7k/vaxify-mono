@@ -10,14 +10,83 @@ import {
   BadgeCheck,
   FileText,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/auth/AuthContext";
+import { hospitalApi } from "@/api/hospital.api";
+import { toast } from "sonner";
 
 export default function StaffInfoCard() {
-  const docUrl = staffStats.documentUrl;
+  const { user } = useAuthContext();
+  const [hospital, setHospital] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await hospitalApi.getMyHospital();
+        setHospital(data);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+        toast.error("Could not load profile details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-[400px] w-full max-w-lg mx-auto items-center justify-center rounded-2xl border bg-card/30 backdrop-blur-sm">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // mapping fields from enriched hospital response (which includes staff info)
+  const staffData = {
+    staffId: `STF-${hospital?.id?.toString().substring(0, 8).toUpperCase() || "..."}`,
+    name: hospital?.staffName || user?.name || "Staff Member",
+    email: hospital?.staffEmail || user?.email || "N/A",
+    phone: hospital?.staffPhone || user?.phone || "+91-XXXXXXXXXX",
+    status: hospital?.status || "ACTIVE",
+    hospitalName: hospital?.name || "Loading...",
+    hospitalId: hospital?.id || "N/A",
+    joinedDate: hospital?.staffCreatedAt
+      ? new Date(hospital.staffCreatedAt).toLocaleDateString()
+      : "January 2026",
+    documentUrl:
+      hospital?.documentUrl ||
+      "https://vaxify-docs.s3.amazonaws.com/test-id-card.pdf",
+  };
+
+  const basicInfo = [
+    { icon: User, label: "Name", value: staffData.name },
+    { icon: Mail, label: "Email", value: staffData.email },
+    { icon: Phone, label: "Phone", value: staffData.phone },
+    {
+      icon: Building2,
+      label: "Hospital",
+      value: staffData.hospitalName,
+    },
+  ];
+
+  const metadataInfo = [
+    { icon: Hash, label: "Staff ID", value: staffData.staffId },
+    { icon: Hash, label: "Hospital ID", value: staffData.hospitalId },
+    { icon: Calendar, label: "Joined", value: staffData.joinedDate },
+    {
+      icon: BadgeCheck,
+      label: "Status",
+      value: staffData.status,
+    },
+  ];
 
   return (
     <motion.div
@@ -66,7 +135,7 @@ export default function StaffInfoCard() {
           {/* header */}
           <div className="flex flex-col items-center space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">{staffStats.name}</h2>
+              <h2 className="text-xl font-semibold">{staffData.name}</h2>
 
               <Badge className="border border-emerald-600/20 bg-emerald-600/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
                 STAFF
@@ -101,9 +170,9 @@ export default function StaffInfoCard() {
                 icon={<FileText className="h-4 w-4" />}
                 label="Verification"
                 value={
-                  docUrl ? (
+                  staffData.documentUrl ? (
                     <a
-                      href={docUrl}
+                      href={staffData.documentUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline flex items-center justify-end gap-1"
@@ -125,10 +194,6 @@ export default function StaffInfoCard() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               Animations                                   */
-/* -------------------------------------------------------------------------- */
-
 const iconAnimation: Variants = {
   initial: { scale: 1, y: 0 },
   hover: {
@@ -137,10 +202,6 @@ const iconAnimation: Variants = {
     transition: { type: "spring", stiffness: 200, damping: 15 },
   },
 };
-
-/* -------------------------------------------------------------------------- */
-/*                               Info Row                                     */
-/* -------------------------------------------------------------------------- */
 
 function InfoRow({
   icon,
@@ -163,42 +224,3 @@ function InfoRow({
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*                               Mock Data (MVP)                               */
-/* -------------------------------------------------------------------------- */
-
-const staffStats = {
-  staffId: "STF-20451",
-  name: "Anita Verma",
-  email: "anita@cityhealth.com",
-  phone: "+91-XXXXXXXXXX",
-  role: "STAFF",
-  status: "ACTIVE",
-  hospitalName: "City Health Hospital",
-  hospitalId: "HOSP-001",
-  joinedDate: "Jan 2026",
-  documentUrl: "https://vaxify-docs.s3.amazonaws.com/test-id-card.pdf",
-};
-
-const basicInfo = [
-  { icon: User, label: "Name", value: staffStats.name },
-  { icon: Mail, label: "Email", value: staffStats.email },
-  { icon: Phone, label: "Phone", value: staffStats.phone },
-  {
-    icon: Building2,
-    label: "Hospital",
-    value: staffStats.hospitalName,
-  },
-];
-
-const metadataInfo = [
-  { icon: Hash, label: "Staff ID", value: staffStats.staffId },
-  { icon: Hash, label: "Hospital ID", value: staffStats.hospitalId },
-  { icon: Calendar, label: "Joined", value: staffStats.joinedDate },
-  {
-    icon: BadgeCheck,
-    label: "Status",
-    value: staffStats.status,
-  },
-];

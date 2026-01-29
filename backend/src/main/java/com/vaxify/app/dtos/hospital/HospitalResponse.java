@@ -17,4 +17,8 @@ public class HospitalResponse {
     private String state;
     private String pincode;
     private HospitalStatus status;
+    private String staffName;
+    private String staffEmail;
+    private String staffPhone;
+    private java.time.LocalDateTime staffCreatedAt;
 }

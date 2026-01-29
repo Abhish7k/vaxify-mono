@@ -111,7 +111,7 @@ const MyHospitalPage = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="p-6 max-w-5xl mx-auto space-y-8"
+      className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500"
     >
       <HospitalHeader
         name={hospital.name}

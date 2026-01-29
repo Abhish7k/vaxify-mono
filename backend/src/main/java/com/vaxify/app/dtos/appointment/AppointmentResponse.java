@@ -17,4 +17,7 @@ public class AppointmentResponse {
     private String slot;
     private AppointmentStatus status;
     private LocalDateTime createdAt;
+    private String patientName;
+    private String patientEmail;
+    private String patientPhone;
 }

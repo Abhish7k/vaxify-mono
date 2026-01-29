@@ -22,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HospitalServiceImpl implements HospitalService {
 
         private final HospitalRepository hospitalRepository;
@@ -30,6 +31,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         // for staff
         @Override
+        @Transactional
         public HospitalResponse registerHospital(
                         StaffHospitalRegisterRequest request,
                         String staffEmail) {
@@ -122,6 +124,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         @Override
+        @Transactional
         public HospitalResponse approveHospital(Long hospitalId) {
 
                 Hospital hospital = getPendingHospital(hospitalId);
@@ -133,6 +136,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         @Override
+        @Transactional
         public HospitalResponse rejectHospital(Long hospitalId) {
 
                 Hospital hospital = getPendingHospital(hospitalId);
@@ -165,6 +169,11 @@ public class HospitalServiceImpl implements HospitalService {
                                 .state(hospital.getState())
                                 .pincode(hospital.getPincode())
                                 .status(hospital.getStatus())
+                                .staffName(hospital.getStaffUser() != null ? hospital.getStaffUser().getName() : null)
+                                .staffEmail(hospital.getStaffUser() != null ? hospital.getStaffUser().getEmail() : null)
+                                .staffPhone(hospital.getStaffUser() != null ? hospital.getStaffUser().getPhone() : null)
+                                .staffCreatedAt(hospital.getStaffUser() != null ? hospital.getStaffUser().getCreatedAt()
+                                                : null)
                                 .build();
         }
 

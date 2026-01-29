@@ -1,6 +1,8 @@
+import { useMemo } from "react";
+import { DataTable } from "@/components/ui/data-table";
 import EmptyStaffAppointmentsState from "./EmptyStaffAppointmentsState";
-import StaffAppointmentCard from "./StaffAppointmentCard";
 import type { StaffAppointmentStatus } from "./StaffAppointmentsTabsSection";
+import { getStaffAppointmentColumns } from "./StaffAppointmentColumns";
 
 export default function StaffAppointmentsListSection({
   appointments,
@@ -12,20 +14,27 @@ export default function StaffAppointmentsListSection({
     (appointment) => appointment.status === activeStatus,
   );
 
+  const columns = useMemo(
+    () =>
+      getStaffAppointmentColumns({
+        onMarkCompleted,
+        onCancelAppointment,
+      }),
+    [onMarkCompleted, onCancelAppointment],
+  );
+
   if (filteredAppointments.length === 0) {
     return <EmptyStaffAppointmentsState status={activeStatus} />;
   }
 
   return (
-    <div className="mt-10 grid gap-5">
-      {filteredAppointments.map((appointment) => (
-        <StaffAppointmentCard
-          key={appointment.id}
-          appointment={appointment}
-          onMarkCompleted={() => onMarkCompleted(appointment)}
-          onCancel={() => onCancelAppointment(appointment)}
-        />
-      ))}
+    <div className="mt-6">
+      <DataTable
+        columns={columns}
+        data={filteredAppointments}
+        searchKey="patientName"
+        searchPlaceholder="Search patients..."
+      />
     </div>
   );
 }

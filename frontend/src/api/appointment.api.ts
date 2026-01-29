@@ -99,4 +99,39 @@ export const appointmentApi = {
     }
     await api.patch(`/appointments/${appointmentId}/cancel`);
   },
+
+  // get all appointments for a staff's hospital
+  getStaffAppointments: async (hospitalId: string): Promise<Appointment[]> => {
+    if (API_CONFIG.USE_MOCKS) {
+      console.log("[Mock API] Fetching staff appointments...");
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      return [];
+    }
+
+    const response = await api.get<any[]>(
+      `/appointments/hospital/${hospitalId}`,
+    );
+    return response.data.map((a: any) => {
+      let status = a.status;
+      if (status === "BOOKED" || status === "scheduled") status = "UPCOMING";
+      return {
+        id: String(a.id),
+        patientName: a.patientName,
+        patientPhone: a.patientPhone,
+        patientEmail: a.patientEmail,
+        vaccine: a.vaccineName,
+        date: a.date,
+        timeSlot: a.slot,
+        status: status,
+      };
+    }) as any;
+  },
+
+  // complete appointment
+  completeAppointment: async (appointmentId: string): Promise<void> => {
+    if (API_CONFIG.USE_MOCKS) {
+      return;
+    }
+    await api.patch(`/appointments/${appointmentId}/complete`);
+  },
 };

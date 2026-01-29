@@ -35,4 +35,15 @@ public class AppointmentController {
         appointmentService.cancelAppointment(id, email);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/hospital/{hospitalId}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByHospital(@PathVariable Long hospitalId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByHospital(hospitalId));
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<Void> completeAppointment(@PathVariable Long id) {
+        appointmentService.completeAppointment(id);
+        return ResponseEntity.ok().build();
+    }
 }

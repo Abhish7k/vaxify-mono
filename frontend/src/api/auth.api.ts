@@ -48,3 +48,11 @@ export const registerStaffApi = async (registerStaffData: any) => {
 
   await api.post("/hospitals/register", registerStaffData);
 };
+
+export const getProfileApi = async (): Promise<any> => {
+  if (API_CONFIG.USE_MOCKS) {
+    return { name: "Mock Staff", phone: "+91-9999999999", status: "ACTIVE" };
+  }
+  const response = await api.get("/users/profile");
+  return response.data;
+};

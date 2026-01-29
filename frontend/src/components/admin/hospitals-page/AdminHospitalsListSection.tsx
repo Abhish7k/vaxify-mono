@@ -5,6 +5,7 @@ import type { AdminHospital, HospitalStatus } from "./types";
 type Props = {
   hospitals: AdminHospital[];
   activeStatus: HospitalStatus;
+  isLoading?: boolean;
   onApproveHospital: (hospital: AdminHospital) => void;
   onRejectHospital: (hospital: AdminHospital) => void;
 };
@@ -12,9 +13,22 @@ type Props = {
 export default function AdminHospitalsListSection({
   hospitals,
   activeStatus,
+  isLoading,
   onApproveHospital,
   onRejectHospital,
 }: Props) {
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-40 w-full bg-muted/40 animate-pulse rounded-lg"
+          />
+        ))}
+      </div>
+    );
+  }
   const filteredHospitals = hospitals.filter(
     (hospital) => hospital.status === activeStatus,
   );
