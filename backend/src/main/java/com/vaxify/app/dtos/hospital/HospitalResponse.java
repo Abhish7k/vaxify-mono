@@ -11,5 +11,10 @@ public class HospitalResponse {
     private Long id;
     private String name;
     private String address;
+    private String licenseNumber;
+    private String documentUrl;
+    private String city;
+    private String state;
+    private String pincode;
     private HospitalStatus status;
 }

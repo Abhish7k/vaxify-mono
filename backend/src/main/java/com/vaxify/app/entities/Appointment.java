@@ -31,7 +31,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Appointment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,6 +43,10 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "slot_id", nullable = false)
     private Slot slot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaccine_id", nullable = false)
+    private Vaccine vaccine;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

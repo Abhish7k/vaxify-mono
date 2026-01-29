@@ -28,19 +28,23 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/api/auth/**").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/hospitals").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/hospitals/**").permitAll()
                                                 .requestMatchers("/api/hospitals/register").permitAll()
                                                 .requestMatchers("/api/files/**").permitAll()
+
                                                 // ---------- SLOT MANAGEMENT ----------
                                                 // STAFF can create / update / delete
                                                 .requestMatchers("/api/slots/staff/**")
                                                 .hasRole("STAFF")
+
                                                 // STAFF can create / update / delete
                                                 .requestMatchers(HttpMethod.GET, "/api/slots")
                                                 .hasAnyRole("USER", "STAFF", "ADMIN")
+
                                                 // ---------- VACCINE MANAGEMENT ----------
                                                 // STAFF can create / update / delete
                                                 .requestMatchers("/api/vaccines/staff/**").hasRole("STAFF")
+
                                                 // STAFF can create / update / delete
                                                 .requestMatchers(HttpMethod.GET, "/api/vaccines/**")
                                                 .hasAnyRole("USER", "STAFF", "ADMIN")

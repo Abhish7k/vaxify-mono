@@ -31,15 +31,17 @@ public class Hospital {
     @Column(name = "city")
     private String city;
 
-     @Column(name = "state")
+    @Column(name = "state")
     private String state;
 
-     @Column(name = "pincode")
+    @Column(name = "pincode")
     private String pincode;
 
-    // Hospital STAFF user
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_user_id", nullable = false)
+    @Column(name = "hospital_document_data", columnDefinition = "LONGTEXT")
+    private String documentUrl;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_user_id", nullable = false, unique = true)
     private User staffUser;
 
     @Enumerated(EnumType.STRING)

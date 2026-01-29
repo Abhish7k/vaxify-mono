@@ -33,6 +33,8 @@ public class StaffHospitalRegistrationDTO {
     @NotBlank(message = "Hospital license number is required")
     private String licenseNumber;
 
+    private String document;
+
     // Optional (for future use)
     private String city;
     private String state;

@@ -2,6 +2,7 @@ package com.vaxify.app.service.impl;
 
 import com.vaxify.app.dtos.hospital.HospitalResponse;
 import com.vaxify.app.dtos.hospital.StaffHospitalRegisterRequest;
+import com.vaxify.app.dtos.hospital.UpdateHospitalRequest;
 import com.vaxify.app.entities.Hospital;
 import com.vaxify.app.entities.User;
 import com.vaxify.app.entities.enums.HospitalStatus;
@@ -55,13 +56,7 @@ public class HospitalServiceImpl implements HospitalService {
                                 .build();
 
                 Hospital saved = hospitalRepository.save(hospital);
-
-                return HospitalResponse.builder()
-                                .id(saved.getId())
-                                .name(saved.getName())
-                                .address(saved.getAddress())
-                                .status(saved.getStatus())
-                                .build();
+                return toResponse(saved);
         }
 
         @Override
@@ -73,15 +68,43 @@ public class HospitalServiceImpl implements HospitalService {
                 Hospital hospital = hospitalRepository.findByStaffUser(staffUser)
                                 .orElseThrow(() -> new IllegalStateException("No hospital found for this staff"));
 
-                return HospitalResponse.builder()
-                                .id(hospital.getId())
-                                .name(hospital.getName())
-                                .address(hospital.getAddress())
-                                .status(hospital.getStatus())
-                                .build();
+                return toResponse(hospital);
         }
 
-        // for admin
+        @Override
+        @Transactional
+        public HospitalResponse updateHospital(UpdateHospitalRequest request, String staffEmail) {
+                User staffUser = userRepository.findByEmail(staffEmail)
+                                .orElseThrow(() -> new IllegalStateException("Staff user not found"));
+
+                Hospital hospital = hospitalRepository.findByStaffUser(staffUser)
+                                .orElseThrow(() -> new IllegalStateException("No hospital found for this staff"));
+
+                hospital.setName(request.getName());
+                hospital.setAddress(request.getAddress());
+                hospital.setCity(request.getCity());
+                hospital.setState(request.getState());
+                hospital.setPincode(request.getPincode());
+                hospital.setDocumentUrl(request.getDocumentUrl());
+
+                return toResponse(hospitalRepository.save(hospital));
+        }
+
+        @Override
+        public HospitalResponse getHospitalById(Long id) {
+                Hospital hospital = hospitalRepository.findById(id)
+                                .orElseThrow(() -> new IllegalStateException("Hospital not found"));
+                return toResponse(hospital);
+        }
+
+        @Override
+        public List<HospitalResponse> getApprovedHospitals() {
+                return hospitalRepository.findByStatus(HospitalStatus.APPROVED)
+                                .stream()
+                                .map(this::toResponse)
+                                .toList();
+        }
+
         @Override
         public List<HospitalResponse> getAllHospitals() {
                 return hospitalRepository.findAll()
@@ -136,6 +159,11 @@ public class HospitalServiceImpl implements HospitalService {
                                 .id(hospital.getId())
                                 .name(hospital.getName())
                                 .address(hospital.getAddress())
+                                .licenseNumber(hospital.getLicenseNumber())
+                                .documentUrl(hospital.getDocumentUrl())
+                                .city(hospital.getCity())
+                                .state(hospital.getState())
+                                .pincode(hospital.getPincode())
                                 .status(hospital.getStatus())
                                 .build();
         }
@@ -165,6 +193,7 @@ public class HospitalServiceImpl implements HospitalService {
                 hospital.setName(dto.getHospitalName());
                 hospital.setAddress(dto.getHospitalAddress());
                 hospital.setLicenseNumber(dto.getLicenseNumber());
+                hospital.setDocumentUrl(dto.getDocument());
                 hospital.setCity(dto.getCity());
                 hospital.setState(dto.getState());
                 hospital.setPincode(dto.getPincode());

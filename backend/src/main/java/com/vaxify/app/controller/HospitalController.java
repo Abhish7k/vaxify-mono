@@ -13,13 +13,19 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/hospitals")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class HospitalController {
 
     private final HospitalService hospitalService;
 
     @GetMapping
-    public ResponseEntity<List<HospitalResponse>> getAllHospitals() {
-        return ResponseEntity.ok(hospitalService.getAllHospitals());
+    public ResponseEntity<List<HospitalResponse>> getAllApprovedHospitals() {
+        return ResponseEntity.ok(hospitalService.getApprovedHospitals());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HospitalResponse> getHospitalById(@PathVariable Long id) {
+        return ResponseEntity.ok(hospitalService.getHospitalById(id));
     }
 
     // @PostMapping("/register")
@@ -47,6 +53,17 @@ public class HospitalController {
                 .getName();
 
         return hospitalService.getMyHospital(email);
+    }
+
+    @PutMapping("/my")
+    public HospitalResponse updateHospital(
+            @Valid @RequestBody com.vaxify.app.dtos.hospital.UpdateHospitalRequest request) {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return hospitalService.updateHospital(request, email);
     }
 
 }
