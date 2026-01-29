@@ -3,13 +3,14 @@ import { useDropzone, type FileRejection } from "react-dropzone";
 import { UploadCloud, File, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { uploadFile } from "@/api/files.api";
 
 interface SingleImageDropzoneProps {
   width?: number;
   height?: number;
   className?: string;
   value?: string | string[];
-  onChange?: (url?: string) => void;
+  onChange?: (url?: string, fileName?: string) => void;
   disabled?: boolean;
 }
 
@@ -28,7 +29,7 @@ export const FileDropzone = ({
         const rejection = fileRejections[0];
 
         if (rejection.errors[0].code === "file-too-large") {
-          toast.error("File is too large using. Max size is 5MB.");
+          toast.error("File is too large. Max size is 5MB.");
         } else {
           toast.error(rejection.errors[0].message);
         }
@@ -41,20 +42,18 @@ export const FileDropzone = ({
       setLoading(true);
 
       try {
-        // mock upload delay
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const response = await uploadFile(file);
 
-        // mock success
-        const mockUrl = URL.createObjectURL(file);
-
+        // backend returns { fileName, fileUrl, message }
         if (onChange) {
-          onChange(mockUrl);
+          onChange(response.fileUrl, response.fileName);
         }
 
         toast.success("Document uploaded successfully");
-      } catch (error) {
-        toast.error("Document upload failed");
-
+      } catch (error: any) {
+        const errorMsg =
+          error.response?.data?.error || "Document upload failed";
+        toast.error(errorMsg);
         console.error(error);
       } finally {
         setLoading(false);

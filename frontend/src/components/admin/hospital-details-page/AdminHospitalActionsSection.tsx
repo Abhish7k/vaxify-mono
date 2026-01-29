@@ -32,7 +32,7 @@ export default function AdminHospitalFloatingActions({
       <div
         className="
           w-72 rounded-lg border p-4
-          bg-background/10 backdrop-blur
+          bg-background/10 backdrop-blur supports-backdrop-filter:bg-background/60
           shadow-lg
           transition-all duration-200 ease-out
           hover:-translate-y-1 hover:scale-[1.03]

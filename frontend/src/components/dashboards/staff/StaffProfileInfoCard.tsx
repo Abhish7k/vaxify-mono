@@ -8,6 +8,8 @@ import {
   Hash,
   Calendar,
   BadgeCheck,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
@@ -15,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function StaffInfoCard() {
+  const docUrl = staffStats.documentUrl;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -91,6 +95,28 @@ export default function StaffInfoCard() {
                   value={item.value}
                 />
               ))}
+
+              {/* doc row */}
+              <InfoRow
+                icon={<FileText className="h-4 w-4" />}
+                label="Verification"
+                value={
+                  docUrl ? (
+                    <a
+                      href={docUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline flex items-center justify-end gap-1"
+                    >
+                      View Cert <ExternalLink className="h-3 w-3" />
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground italic">
+                      Pending Upload
+                    </span>
+                  )
+                }
+              />
             </div>
           </div>
         </motion.div>
@@ -131,9 +157,9 @@ function InfoRow({
       <span className="text-xs text-muted-foreground min-w-0 truncate">
         {label}
       </span>
-      <span className="font-medium text-right flex-1 min-w-0 truncate">
+      <div className="font-medium text-right flex-1 min-w-0 truncate">
         {value}
-      </span>
+      </div>
     </div>
   );
 }
@@ -152,6 +178,7 @@ const staffStats = {
   hospitalName: "City Health Hospital",
   hospitalId: "HOSP-001",
   joinedDate: "Jan 2026",
+  documentUrl: "https://vaxify-docs.s3.amazonaws.com/test-id-card.pdf",
 };
 
 const basicInfo = [
