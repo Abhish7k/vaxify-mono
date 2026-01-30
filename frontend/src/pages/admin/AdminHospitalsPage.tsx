@@ -3,6 +3,7 @@ import AdminHospitalsListSection from "@/components/admin/hospitals-page/AdminHo
 
 import { hospitalApi } from "@/api/hospital.api";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 import type {
   AdminHospital,
@@ -10,6 +11,29 @@ import type {
 } from "@/components/admin/hospitals-page/types";
 import AdminHospitalsTabsSection from "@/components/admin/hospitals-page/AdminHospitalsTabsSection";
 import { toast } from "sonner";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1] as any,
+    },
+  },
+};
 
 const AdminHospitalsPage = () => {
   const [activeStatus, setActiveStatus] = useState<HospitalStatus>("PENDING");
@@ -20,7 +44,11 @@ const AdminHospitalsPage = () => {
     setLoading(true);
 
     try {
-      const data = await hospitalApi.getAdminHospitals();
+      const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
+      const [data] = await Promise.all([
+        hospitalApi.getAdminHospitals(),
+        minDelay,
+      ]);
       setHospitals(data);
     } catch (error) {
       toast.error("Failed to load hospitals", {
@@ -82,25 +110,39 @@ const AdminHospitalsPage = () => {
   };
 
   return (
-    <div className="px-5 py-5 flex flex-col gap-10">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="px-5 py-5 md:px-10 flex flex-col gap-10"
+    >
       {/* header */}
-      <AdminHospitalsHeaderSection />
+      <motion.div variants={item}>
+        <AdminHospitalsHeaderSection
+          loading={loading}
+          onRefresh={fetchHospitals}
+        />
+      </motion.div>
 
       {/* tabs */}
-      <AdminHospitalsTabsSection
-        value={activeStatus}
-        onChange={setActiveStatus}
-      />
+      <motion.div variants={item}>
+        <AdminHospitalsTabsSection
+          value={activeStatus}
+          onChange={setActiveStatus}
+        />
+      </motion.div>
 
       {/* list */}
-      <AdminHospitalsListSection
-        hospitals={hospitals}
-        activeStatus={activeStatus}
-        isLoading={loading}
-        onApproveHospital={handleApproveHospital}
-        onRejectHospital={handleRejectHospital}
-      />
-    </div>
+      <motion.div variants={item}>
+        <AdminHospitalsListSection
+          hospitals={hospitals}
+          activeStatus={activeStatus}
+          isLoading={loading}
+          onApproveHospital={handleApproveHospital}
+          onRejectHospital={handleRejectHospital}
+        />
+      </motion.div>
+    </motion.div>
   );
 };
 

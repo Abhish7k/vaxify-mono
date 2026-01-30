@@ -1,6 +1,7 @@
 import AdminHospitalCard from "./AdminHospitalCard";
 import EmptyAdminHospitalsState from "./EmptyAdminHospitalsState";
 import type { AdminHospital, HospitalStatus } from "./types";
+import { AdminHospitalsSkeleton } from "@/components/skeletons/AdminHospitalsSkeleton";
 
 type Props = {
   hospitals: AdminHospital[];
@@ -18,16 +19,7 @@ export default function AdminHospitalsListSection({
   onRejectHospital,
 }: Props) {
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="h-40 w-full bg-muted/40 animate-pulse rounded-lg"
-          />
-        ))}
-      </div>
-    );
+    return <AdminHospitalsSkeleton />;
   }
   const filteredHospitals = hospitals.filter(
     (hospital) => hospital.status === activeStatus,

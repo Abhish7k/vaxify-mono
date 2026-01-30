@@ -71,6 +71,13 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     private com.vaxify.app.dtos.appointment.AppointmentResponse mapToAppointmentResponse(Appointment a) {
         return com.vaxify.app.dtos.appointment.AppointmentResponse.builder()
                 .id(a.getId())

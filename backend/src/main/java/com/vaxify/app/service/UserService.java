@@ -8,4 +8,6 @@ public interface UserService {
     public UserDTO getProfile(String email);
 
     UserStatsDTO getUserStats(String email);
+
+    java.util.List<UserDTO> getAllUsers();
 }

@@ -25,6 +25,7 @@ import AdminHospitalsPage from "@/pages/admin/AdminHospitalsPage";
 import AdminHospitalDetailsPage from "@/pages/admin/AdminHospitalDetailsPage";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminProfilePage from "@/pages/admin/AdminProfile";
+import AdminAnalyticsPage from "@/pages/admin/AdminAnalyticsPage";
 import UserProfilePage from "@/pages/user/UserProfilePage";
 import StaffProfilePage from "@/pages/staff/StaffProfilePage";
 import StaffVaccinesPage from "@/pages/staff/StaffVaccinesPage";
@@ -188,6 +189,10 @@ export const router = createBrowserRouter([
           {
             path: "/admin/users",
             element: <AdminUsersPage />,
+          },
+          {
+            path: "/admin/analytics",
+            element: <AdminAnalyticsPage />,
           },
           {
             path: "/admin/profile",

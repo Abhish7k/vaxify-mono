@@ -36,27 +36,19 @@ const itemVariants: Variants = {
   },
 };
 
-export default function MainSection() {
-  const hospital = {
-    id: "hosp-1",
-    name: "City Health Hospital",
-    address: "MG Road, Pune",
-    status: "PENDING" as const,
-    registeredOn: "2026-01-10",
-    workingHours: "9:00 AM – 5:00 PM",
-    documentUrl: "https://vaxify-docs.s3.amazonaws.com/test-id-card.pdf",
-    vaccines: [
-      { name: "Covishield", stock: 120, capacity: 200, trend: "up" },
-      { name: "Covaxin", stock: 60, capacity: 150, trend: "down" },
-      { name: "Sputnik V", stock: 0, capacity: 100, trend: "none" },
-    ],
-    staff: {
-      name: "Ramesh Kumar",
-      email: "ramesh@cityhealth.com",
-      phone: "9876543210",
-      role: "STAFF",
-    },
+export default function MainSection({ hospital }: { hospital: any }) {
+  // map backend vaccines to display format if needed
+  const displayVaccines = hospital.vaccines || [];
+  const staff = {
+    name: hospital.staffName || "N/A",
+    email: hospital.staffEmail || "N/A",
+    phone: hospital.staffPhone || "N/A",
+    role: "STAFF",
   };
+
+  const registeredOn = hospital.staffCreatedAt
+    ? new Date(hospital.staffCreatedAt).toLocaleDateString()
+    : "N/A";
 
   return (
     <motion.div
@@ -65,7 +57,7 @@ export default function MainSection() {
       animate="visible"
       className="max-w-7xl mx-auto space-y-6 pb-20 p-4 font-sans"
     >
-      {/* Back Button */}
+      {/* back btn */}
       <motion.div variants={itemVariants} className="mb-4">
         <button
           onClick={() => window.history.back()}
@@ -76,7 +68,7 @@ export default function MainSection() {
         </button>
       </motion.div>
 
-      {/* Header Section */}
+      {/* header */}
       <motion.div
         variants={itemVariants}
         className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8"
@@ -92,6 +84,7 @@ export default function MainSection() {
             <h1 className="text-3xl font-bold text-slate-900">
               {hospital.name}
             </h1>
+
             <AppointmentStatusBadge status={hospital.status} />
           </div>
           <p className="text-slate-500 flex items-center justify-center md:justify-start gap-2">
@@ -104,9 +97,9 @@ export default function MainSection() {
         </div>
       </motion.div>
 
-      {/* Simple Grid */}
+      {/* grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Vaccine Inventory */}
+        {/* vaccines */}
         <motion.div variants={itemVariants}>
           <Card className="h-full">
             <CardHeader>
@@ -116,61 +109,67 @@ export default function MainSection() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {hospital.vaccines.map((v) => (
-                <div
-                  key={v.name}
-                  className="flex justify-between items-center border-b pb-4 last:border-0 last:pb-0"
-                >
-                  <div className="space-y-1">
-                    <p className="font-bold text-slate-900">{v.name}</p>
-                    <Badge
-                      className={`font-medium uppercase text-[8px]   ${
-                        v.stock === 0
-                          ? "border-destructive/50 bg-destructive/10 text-destructive"
-                          : v.stock < v.capacity * 0.2
-                            ? "border-amber-600/20 bg-amber-600/10 text-amber-600"
-                            : "border-green-600/20 bg-green-600/10 text-green-600"
-                      }`}
-                    >
-                      {v.stock === 0
-                        ? "Out of Stock"
-                        : v.stock < v.capacity * 0.2
-                          ? "Low Stock"
-                          : "In Stock"}
-                    </Badge>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-baseline justify-end gap-1">
-                      <span
-                        className={`text font-black ${v.stock > 0 ? "text-slate-900" : "text-rose-500"}`}
+              {displayVaccines.length > 0 ? (
+                displayVaccines.map((v: any) => (
+                  <div
+                    key={v.name}
+                    className="flex justify-between items-center border-b pb-4 last:border-0 last:pb-0"
+                  >
+                    <div className="space-y-1">
+                      <p className="font-bold text-slate-900">{v.name}</p>
+                      <Badge
+                        className={`font-medium uppercase text-[8px]   ${
+                          !v.stock || v.stock === 0
+                            ? "border-destructive/50 bg-destructive/10 text-destructive"
+                            : v.stock < (v.capacity || 100) * 0.2
+                              ? "border-amber-600/20 bg-amber-600/10 text-amber-600"
+                              : "border-green-600/20 bg-green-600/10 text-green-600"
+                        }`}
                       >
-                        {v.stock}
-                      </span>
-                      <span className="text-slate-400 font-bold">
-                        / {v.capacity}
-                      </span>
+                        {!v.stock || v.stock === 0
+                          ? "Out of Stock"
+                          : v.stock < (v.capacity || 100) * 0.2
+                            ? "Low Stock"
+                            : "In Stock"}
+                      </Badge>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-baseline justify-end gap-1">
+                        <span
+                          className={`text font-black ${v.stock > 0 ? "text-slate-900" : "text-rose-500"}`}
+                        >
+                          {v.stock || 0}
+                        </span>
+                        <span className="text-slate-400 font-bold">
+                          / {v.capacity || 100}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-center text-muted-foreground py-10">
+                  No vaccines available in inventory
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Staff Details */}
+        {/* staff details */}
         <motion.div variants={itemVariants}>
           <Card className="h-full">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Avatar className="h-6 w-6">
                   <AvatarFallback className="text-[10px]">
-                    {hospital.staff.name
+                    {staff.name
                       .split(" ")
-                      .map((n) => n[0])
+                      .map((n: string) => n[0])
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
-                Lead Administrator
+                Hospital Staff
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -178,19 +177,19 @@ export default function MainSection() {
                 <span className="font-semibold w-20 text-xs text-slate-400 uppercase">
                   Name
                 </span>
-                <span className="text-sm">{hospital.staff.name}</span>
+                <span className="text-sm">{staff.name}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-700">
                 <span className="font-semibold w-20 text-xs text-slate-400 uppercase">
                   Email
                 </span>
-                <span className="text-sm">{hospital.staff.email}</span>
+                <span className="text-sm">{staff.email}</span>
               </div>
               <div className="flex items-center gap-3 text-slate-700">
                 <span className="font-semibold w-20 text-xs text-slate-400 uppercase">
                   Contact
                 </span>
-                <span className="text-sm">{hospital.staff.phone}</span>
+                <span className="text-sm">{staff.phone}</span>
               </div>
             </CardContent>
           </Card>
@@ -208,11 +207,11 @@ export default function MainSection() {
             <CardContent className="space-y-3 font-medium">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Working Hours</span>
-                <span>{hospital.workingHours}</span>
+                <span>{hospital.workingHours || "9:00 AM – 5:00 PM"}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Date Joined</span>
-                <span>{hospital.registeredOn}</span>
+                <span>{registeredOn}</span>
               </div>
             </CardContent>
           </Card>
@@ -230,15 +229,21 @@ export default function MainSection() {
             <CardContent className="flex-1 flex flex-col justify-center">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">Registration Proof</span>
-                <a
-                  href={hospital.documentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline flex items-center gap-1 font-semibold"
-                >
-                  View PDF
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+                {hospital.documentUrl ? (
+                  <a
+                    href={hospital.documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    View PDF
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                ) : (
+                  <span className="text-muted-foreground italic">
+                    No document uploaded
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>

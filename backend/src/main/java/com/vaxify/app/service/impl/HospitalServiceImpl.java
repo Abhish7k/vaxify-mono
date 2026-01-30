@@ -10,6 +10,7 @@ import com.vaxify.app.entities.enums.Role;
 import com.vaxify.app.repository.HospitalRepository;
 import com.vaxify.app.repository.UserRepository;
 import com.vaxify.app.service.HospitalService;
+import com.vaxify.app.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class HospitalServiceImpl implements HospitalService {
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final VaccineRepository vaccineRepository;
+        private final S3Service s3Service;
 
         // for staff
         @Override
@@ -176,12 +178,23 @@ public class HospitalServiceImpl implements HospitalService {
                                                 .build())
                                 .collect(Collectors.toList());
 
+                String dbDocumentUrl = hospital.getDocumentUrl();
+                String finalDocumentUrl = dbDocumentUrl;
+
+                if (dbDocumentUrl != null && !dbDocumentUrl.isEmpty() && !dbDocumentUrl.startsWith("http")) {
+                        try {
+                                finalDocumentUrl = s3Service.generatePresignedUrl(dbDocumentUrl);
+                        } catch (Exception e) {
+                                // Fallback to raw value if signing fails
+                        }
+                }
+
                 return HospitalResponse.builder()
                                 .id(hospital.getId())
                                 .name(hospital.getName())
                                 .address(hospital.getAddress())
                                 .licenseNumber(hospital.getLicenseNumber())
-                                .documentUrl(hospital.getDocumentUrl())
+                                .documentUrl(finalDocumentUrl)
                                 .city(hospital.getCity())
                                 .state(hospital.getState())
                                 .pincode(hospital.getPincode())

@@ -144,6 +144,7 @@ const RegisterStaff = () => {
         hospitalName,
         hospitalAddress,
         licenseNumber: hospitalRegistrationId, // backend calls it licenseNumber
+        document: data.document,
       };
 
       await registerStaff(registerStaffPayload);

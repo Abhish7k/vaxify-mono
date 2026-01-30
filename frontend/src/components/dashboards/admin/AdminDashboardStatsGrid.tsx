@@ -1,11 +1,42 @@
-import { Hospital, UserCheck, Users, Building2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import type { AdminStats } from "@/api/admin.api";
 
-export default function AdminDashboardStatsGrid() {
+export default function AdminDashboardStatsGrid({
+  stats,
+}: {
+  stats: AdminStats | null;
+}) {
+  const statsConfig = [
+    {
+      title: "Total Hospitals",
+      value: stats?.totalHospitals ?? 0,
+      subtitle: "Registered on platform",
+      icon: "/icons/hospital-1.png",
+    },
+    {
+      title: "Pending Approvals",
+      value: stats?.pendingApprovals ?? 0,
+      subtitle: "Awaiting verification",
+      icon: "/icons/hourglass.png",
+    },
+    {
+      title: "Total Users",
+      value: stats?.totalUsers ?? 0,
+      subtitle: "Citizens registered",
+      icon: "/icons/users.png",
+    },
+    {
+      title: "Active Centers",
+      value: stats?.activeCenters ?? 0,
+      subtitle: "Operational vaccination centers",
+      icon: "/icons/center.png",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
+      {statsConfig.map((stat) => (
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
@@ -16,68 +47,46 @@ interface StatCardProps {
   title: string;
   value: number;
   subtitle: string;
-  icon: React.ElementType;
-  iconBg: string;
+  icon: string;
 }
 
-function StatCard({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  iconBg,
-}: StatCardProps) {
+function StatCard({ title, value, subtitle, icon }: StatCardProps) {
+  const imageAnimation = {
+    hover: {
+      scale: 1.1,
+      rotate: 5,
+      x: 5,
+      transition: { duration: 0.4, ease: "easeInOut" },
+    },
+  } as any;
+
   return (
-    <Card className="p-6 ">
-      <div className="flex items-center justify-between">
-        {/* left */}
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-semibold">{value.toLocaleString()}</p>
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
+    <motion.div whileHover="hover" className="h-full">
+      <Card className="p-6 h-full relative overflow-hidden group border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+        <div className="flex items-center justify-between relative z-10">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-semibold tracking-tight">
+              {value.toLocaleString()}
+            </p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
+          </div>
+          <div className="w-12 h-12 shrink-0" />
         </div>
 
-        {/* right icon */}
-        <div
-          className={cn(
-            "flex h-12 w-12 items-center justify-center rounded-full",
-            iconBg,
-          )}
+        {/* animated backdrop icon */}
+        <motion.div
+          variants={imageAnimation}
+          className="absolute -right-8 -bottom-8 w-32 h-32 opacity-90 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-full flex items-center justify-center p-4"
         >
-          <Icon className="h-5 w-5" />
-        </div>
-      </div>
-    </Card>
+          <img
+            src={icon}
+            alt=""
+            className="w-full h-full object-contain"
+            draggable={false}
+          />
+        </motion.div>
+      </Card>
+    </motion.div>
   );
 }
-
-const stats = [
-  {
-    title: "Total Hospitals",
-    value: 28,
-    subtitle: "Registered on platform",
-    icon: Hospital,
-    iconBg: "bg-blue-100 text-blue-600",
-  },
-  {
-    title: "Pending Approvals",
-    value: 7,
-    subtitle: "Awaiting verification",
-    icon: UserCheck,
-    iconBg: "bg-yellow-100 text-yellow-600",
-  },
-  {
-    title: "Total Users",
-    value: 224,
-    subtitle: "Citizens registered",
-    icon: Users,
-    iconBg: "bg-green-100 text-green-600",
-  },
-  {
-    title: "Active Centers",
-    value: 40,
-    subtitle: "Operational vaccination centers",
-    icon: Building2,
-    iconBg: "bg-purple-100 text-purple-600",
-  },
-];

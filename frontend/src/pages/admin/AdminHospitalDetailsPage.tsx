@@ -1,47 +1,98 @@
 import AdminHospitalFloatingActions from "@/components/admin/hospital-details-page/AdminHospitalActionsSection";
-import { mockHospitalDetails } from "@/components/admin/hospital-details-page/mockdata";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import MainSection from "./AdminHospitalDetailsMainSection";
+import { hospitalApi } from "@/api/hospital.api";
+import { Loader2 } from "lucide-react";
 
 export default function AdminHospitalDetailsPage() {
-  const [hospital, setHospital] = useState(mockHospitalDetails);
+  const { hospitalId } = useParams<{ hospitalId: string }>();
+  const [hospital, setHospital] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleApproveHospital = () => {
-    setHospital((prev) => ({
-      ...prev,
-      status: "APPROVED",
-    }));
+  useEffect(() => {
+    const fetchHospital = async () => {
+      if (!hospitalId) return;
+      try {
+        setLoading(true);
+        const data = await hospitalApi.getHospitalById(hospitalId);
+        setHospital(data);
+      } catch (error) {
+        console.error("Failed to fetch hospital details", error);
+        toast.error("Failed to load hospital details");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHospital();
+  }, [hospitalId]);
 
-    console.log("Approve:", hospital.id);
+  const handleApproveHospital = async () => {
+    if (!hospitalId) return;
+    try {
+      await hospitalApi.approveHospital(hospitalId);
+      setHospital((prev: any) => ({
+        ...prev,
+        status: "APPROVED",
+      }));
 
-    toast.success("Approved hospital successfully", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+      toast.success("Approved hospital successfully", {
+        style: {
+          backgroundColor: "#e7f9ed",
+          color: "#0f7a28",
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to approve hospital");
+    }
   };
 
-  const handleRejectHospital = () => {
-    setHospital((prev) => ({
-      ...prev,
-      status: "REJECTED",
-    }));
+  const handleRejectHospital = async () => {
+    if (!hospitalId) return;
+    try {
+      await hospitalApi.rejectHospital(hospitalId);
+      setHospital((prev: any) => ({
+        ...prev,
+        status: "REJECTED",
+      }));
 
-    console.log("Reject:", hospital.id);
-
-    toast.error("Rejected hospital successfully", {
-      style: {
-        backgroundColor: "#e7f9ed",
-        color: "#0f7a28",
-      },
-    });
+      toast.error("Rejected hospital successfully", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to reject hospital");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!hospital) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
+        <p className="text-muted-foreground">Hospital not found</p>
+        <button
+          onClick={() => window.history.back()}
+          className="text-primary hover:underline"
+        >
+          Go back
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="px-5 py-5 md:px-10 mb-40">
-      <MainSection />
+      <MainSection hospital={hospital} />
 
       <AdminHospitalFloatingActions
         hospitalName={hospital.name}

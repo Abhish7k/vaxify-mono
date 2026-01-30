@@ -60,8 +60,10 @@ export const HospitalDetailsStep = ({
 
         <FileDropzone
           value={documentUrl}
-          onChange={(url) => {
-            setValue("document", url || "", { shouldValidate: true });
+          onChange={(url, fileName) => {
+            setValue("document", fileName || url || "", {
+              shouldValidate: true,
+            });
           }}
         />
 

@@ -56,4 +56,9 @@ export const userApi = {
     }
     return stats;
   },
+
+  getAllUsers: async (): Promise<UserProfile[]> => {
+    const response = await api.get<UserProfile[]>("/admin/users");
+    return response.data;
+  },
 };

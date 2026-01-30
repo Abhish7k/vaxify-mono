@@ -40,7 +40,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { data, type AdminUser } from "./mockdata";
+import { type UserProfile } from "@/api/user.api";
+
+// type alias for easier transition if needed
+export type AdminUser = UserProfile;
 
 // cols
 export const columns: ColumnDef<AdminUser>[] = [
@@ -56,6 +59,7 @@ export const columns: ColumnDef<AdminUser>[] = [
     header: ({ column }) => (
       <Button
         variant="ghost"
+        className="-ml-4"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Email
@@ -71,10 +75,19 @@ export const columns: ColumnDef<AdminUser>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Registered On",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="-ml-4"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Registered On
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div className="text-sm text-muted-foreground">
-        {row.getValue("createdAt")}
+        {new Date(row.getValue("createdAt")).toLocaleDateString()}
       </div>
     ),
   },
@@ -115,7 +128,10 @@ function UserActions({ user }: { user: AdminUser }) {
             <DetailRow label="Email" value={user.email} />
             <DetailRow label="Role" value={user.role} />
             <DetailRow label="Phone" value={user.phone ?? "—"} />
-            <DetailRow label="Registered On" value={user.createdAt} />
+            <DetailRow
+              label="Registered On"
+              value={new Date(user.createdAt).toLocaleString()}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -133,12 +149,12 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 // main component
-export default function AdminUsersTable() {
+export default function AdminUsersTable({ users }: { users: AdminUser[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [roleFilter, setRoleFilter] = React.useState<string>("all");
 
   const table = useReactTable({
-    data,
+    data: users,
     columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
