@@ -45,6 +45,42 @@ export const HospitalDetailsStep = ({
         )}
       </div>
 
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>City</Label>
+          <Input {...register("city")} placeholder="e.g. Pune" />
+          {errors.city && (
+            <p className="text-sm text-red-500">
+              {errors.city.message as string}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>State</Label>
+          <Input {...register("state")} placeholder="e.g. Maharashtra" />
+          {errors.state && (
+            <p className="text-sm text-red-500">
+              {errors.state.message as string}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Pincode</Label>
+        <Input
+          {...register("pincode")}
+          placeholder="e.g. 411057"
+          maxLength={6}
+        />
+        {errors.pincode && (
+          <p className="text-sm text-red-500">
+            {errors.pincode.message as string}
+          </p>
+        )}
+      </div>
+
       <div className="space-y-2">
         <Label>Hospital Registration ID</Label>
         <Input {...register("hospitalRegistrationId")} />

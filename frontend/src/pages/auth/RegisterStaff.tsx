@@ -53,6 +53,10 @@ const step2Schema = z
 
     hospitalAddress: z.string().min(5, "Hospital address is required"),
 
+    city: z.string().min(2, "City is required"),
+    state: z.string().min(2, "State is required"),
+    pincode: z.string().regex(/^\d{6}$/, "Enter a valid 6-digit pincode"),
+
     hospitalRegistrationId: z
       .string()
       .min(3, "Hospital registration ID is required"),
@@ -132,6 +136,9 @@ const RegisterStaff = () => {
         password,
         hospitalName,
         hospitalAddress,
+        city,
+        state,
+        pincode,
         hospitalRegistrationId,
       } = data;
 
@@ -143,6 +150,9 @@ const RegisterStaff = () => {
         phone,
         hospitalName,
         hospitalAddress,
+        city,
+        state,
+        pincode,
         licenseNumber: hospitalRegistrationId, // backend calls it licenseNumber
         document: data.document,
       };

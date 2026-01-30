@@ -324,6 +324,7 @@ export default function StaffSlotsPage() {
             searchKey="date"
             searchPlaceholder="Search by date..."
             loading={loading}
+            pagination={true}
           />
         </CardContent>
       </Card>

@@ -11,7 +11,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { LoaderCircle } from "lucide-react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -151,27 +150,6 @@ const LoginForm: React.FC = () => {
             </div>
           </div>
         </form>
-
-        {/* social logins */}
-        <div className="grid grid-cols-2 gap-5">
-          <Button
-            className="cursor-pointer active:scale-95 transition-all"
-            variant="outline"
-            disabled={isLoading}
-          >
-            <FaGoogle className="mr-2" />
-            Google
-          </Button>
-
-          <Button
-            className="cursor-pointer active:scale-95 transition-all"
-            variant="outline"
-            disabled={isLoading}
-          >
-            <FaGithub className="mr-2" />
-            Github
-          </Button>
-        </div>
       </CardContent>
 
       <CardFooter className="pt-2 flex justify-center">

@@ -91,7 +91,7 @@ export const getVaccineColumns = ({
             <AlertTriangle className="h-4 w-4 text-destructive" />
           ) : percentage < 20 ? (
             <AlertTriangle className="h-4 w-4 text-red-500" />
-          ) : percentage < 50 ? (
+          ) : percentage < 40 ? (
             <TrendingDown className="h-4 w-4 text-amber-500" />
           ) : (
             <TrendingUp className="h-4 w-4 text-emerald-500" />
@@ -136,7 +136,7 @@ export const getVaccineColumns = ({
             Critical
           </Badge>
         );
-      } else if (percentage < 50) {
+      } else if (percentage < 40) {
         return (
           <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">
             Low Stock
