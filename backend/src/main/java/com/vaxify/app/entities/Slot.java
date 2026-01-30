@@ -34,23 +34,22 @@ import lombok.Setter;
 @Builder
 public class Slot {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Which center this slot belongs to
-    @ManyToOne(fetch = FetchType.LAZY)  
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital center; 
+    private Hospital center;
 
     @Column(name = "slot_date", nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TIME(0)")
     private LocalTime startTime;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TIME(0)")
     private LocalTime endTime;
 
     @Column(nullable = false)
@@ -65,5 +64,5 @@ public class Slot {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-    
+
 }

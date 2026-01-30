@@ -49,10 +49,14 @@ export default function BookingDateAndSlotSection({
         timezone="IST"
         availableDates={availableDates}
         timeSlots={availableSlots}
-        onDateSelect={(day) => {
-          const date = new Date();
-          date.setDate(day);
-          onDateSelect(date.toISOString().split("T")[0]);
+        onDateSelect={(dateObj) => {
+          // manually format to avoid timezone issues with ISOString
+          const year = dateObj.getFullYear();
+          const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+          const day = String(dateObj.getDate()).padStart(2, "0");
+          const dateStr = `${year}-${month}-${day}`;
+
+          onDateSelect(dateStr);
           onResetSlot();
         }}
         onTimeSelect={onSlotSelect}

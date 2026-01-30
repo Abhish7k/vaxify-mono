@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.vaxify.app.entities.enums.SlotStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,19 +14,21 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor        
-@AllArgsConstructor 
+@NoArgsConstructor
+@AllArgsConstructor
 public class SlotResponseDTO {
 
     private Long id;
     private Long hospitalId;
     private String hospitalName;
     private LocalDate date;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
     private Integer capacity;
     private Integer bookedCount;
     private SlotStatus status;
     private LocalDateTime createdAt;
 }
-

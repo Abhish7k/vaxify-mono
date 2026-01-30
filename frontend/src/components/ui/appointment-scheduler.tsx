@@ -22,7 +22,7 @@ export interface AppointmentSchedulerProps {
   timezone: string;
   availableDates?: AvailableDate[];
   timeSlots?: TimeSlot[];
-  onDateSelect?: (date: number) => void;
+  onDateSelect?: (date: Date) => void;
   onTimeSelect?: (time: string) => void;
   onTimezoneChange?: (timezone: string) => void;
 }
@@ -42,7 +42,7 @@ export function AppointmentScheduler({
   const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
 
   useEffect(() => {
-    onDateSelect?.(today.getDate());
+    onDateSelect?.(today);
   }, []);
 
   const monthNames = [
@@ -98,7 +98,7 @@ export function AppointmentScheduler({
 
     setSelectedDate(day);
     setSelectedTime(null);
-    onDateSelect?.(day);
+    onDateSelect?.(selected);
   };
 
   const handleTimeClick = (time: string) => {
