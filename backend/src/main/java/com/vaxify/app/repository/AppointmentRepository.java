@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findBySlotCenterId(Long centerId);
+
+    List<Appointment> findByUserEmail(String email);
 }

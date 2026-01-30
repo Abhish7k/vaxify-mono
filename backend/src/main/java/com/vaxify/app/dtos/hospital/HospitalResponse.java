@@ -21,4 +21,5 @@ public class HospitalResponse {
     private String staffEmail;
     private String staffPhone;
     private java.time.LocalDateTime staffCreatedAt;
+    private java.util.List<com.vaxify.app.dtos.VaccineResponseDTO> availableVaccines;
 }

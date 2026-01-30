@@ -38,8 +38,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 List<Slot> slots = slotRepository.findByCenterIdAndDate(request.getCenterId(),
                                 java.time.LocalDate.parse(request.getDate()));
 
+                // compare localtime objects to handle format differences (e.g. 09:00 vs
+                // 09:00:00)
+                java.time.LocalTime requestedTime = java.time.LocalTime.parse(request.getSlot());
+
                 Slot selectedSlot = slots.stream()
-                                .filter(s -> s.getStartTime().toString().equals(request.getSlot()))
+                                .filter(s -> s.getStartTime().equals(requestedTime))
                                 .findFirst()
                                 .orElseThrow(() -> new VaxifyException(
                                                 "No available slot found for the selected time"));
@@ -152,8 +156,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         private AppointmentResponse mapToResponse(Appointment a) {
                 return AppointmentResponse.builder()
                                 .id(a.getId())
+                                .centerId(a.getSlot().getCenter().getId())
                                 .centerName(a.getSlot().getCenter().getName())
                                 .centerAddress(a.getSlot().getCenter().getAddress())
+                                .vaccineId(a.getVaccine().getId())
                                 .vaccineName(a.getVaccine().getName())
                                 .date(a.getSlot().getDate().toString())
                                 .slot(a.getSlot().getStartTime().toString())

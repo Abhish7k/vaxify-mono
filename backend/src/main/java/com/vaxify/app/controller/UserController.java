@@ -23,12 +23,18 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> getProfile(Authentication authentication) {
 
-        // Email / username extracted from JWT
+        // email / username extracted from JWT
         String email = authentication.getName();
 
         UserDTO userDTO = userService.getProfile(email);
 
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<com.vaxify.app.dtos.UserStatsDTO> getStats(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.getUserStats(email));
     }
 
 }

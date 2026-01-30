@@ -25,8 +25,10 @@ export const appointmentApi = {
       return slots;
     }
 
+    const formattedDate = date.includes("T") ? date.split("T")[0] : date;
+
     const response = await api.get<any[]>(`/slots/hospital/${centerId}/date`, {
-      params: { date },
+      params: { date: formattedDate },
     });
 
     return response.data.map((s: any) => ({
@@ -60,9 +62,9 @@ export const appointmentApi = {
     const a = response.data;
     return {
       id: String(a.id),
-      userId: "", // normalized
-      centerId: "", // normalized
-      vaccineId: "", // normalized
+      userId: String(a.userId),
+      centerId: String(a.hospitalId || a.centerId),
+      vaccineId: String(a.vaccineId),
       date: a.date,
       slot: a.slot,
       status: a.status.toLowerCase(),
@@ -82,6 +84,7 @@ export const appointmentApi = {
     const response = await api.get<any[]>("/appointments/my");
     return response.data.map((a: any) => ({
       id: String(a.id),
+      centerId: String(a.hospitalId || a.centerId),
       date: a.date,
       slot: a.slot,
       status: a.status.toLowerCase(),

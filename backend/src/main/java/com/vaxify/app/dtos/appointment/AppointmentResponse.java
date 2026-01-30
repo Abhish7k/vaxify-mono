@@ -10,8 +10,10 @@ import java.time.LocalDateTime;
 @Builder
 public class AppointmentResponse {
     private Long id;
+    private Long centerId;
     private String centerName;
     private String centerAddress;
+    private Long vaccineId;
     private String vaccineName;
     private String date;
     private String slot;

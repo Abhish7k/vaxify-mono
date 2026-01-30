@@ -25,7 +25,7 @@ export default function BookingDateAndSlotSection({
     if (!selectedDate) {
       const today = new Date();
 
-      onDateSelect(today.toISOString());
+      onDateSelect(today.toISOString().split("T")[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -52,7 +52,7 @@ export default function BookingDateAndSlotSection({
         onDateSelect={(day) => {
           const date = new Date();
           date.setDate(day);
-          onDateSelect(date.toISOString());
+          onDateSelect(date.toISOString().split("T")[0]);
           onResetSlot();
         }}
         onTimeSelect={onSlotSelect}

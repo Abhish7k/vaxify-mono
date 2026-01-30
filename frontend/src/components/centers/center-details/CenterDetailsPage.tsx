@@ -1,11 +1,15 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { mockCenterData, type CenterData } from "./types";
+import { type CenterData } from "./types";
 
 import CenterDetailsHeaderSection from "./CenterDetailsHeaderSection";
 import CenterDetailsVaccinesSection from "./CenterDetailsVaccinesSection";
 import CenterDetailsInfoSection from "./CenterDetailsInfoSection";
 import CenterDetailsOperatingInfoSection from "./CenterDetailsOperatingInfoSection";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { hospitalApi } from "@/api/hospital.api";
+import CenterNotFound from "./CenterNotFound";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,7 +27,63 @@ const itemVariants = {
 };
 
 const CenterDetailsPage = () => {
-  const center: CenterData = mockCenterData;
+  const { centerId } = useParams();
+  const [center, setCenter] = useState<CenterData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCenterDetails = async () => {
+      if (!centerId) return;
+      try {
+        setLoading(true);
+        const data = await hospitalApi.getHospitalById(centerId);
+        if (data) {
+          // map api res to center data
+          const mappedData: CenterData = {
+            id: String(data.id),
+            name: data.name,
+            address: data.address,
+            phone: (data as any).staffPhone || "N/A",
+            email: (data as any).staffEmail || "N/A",
+            operatingHours: {
+              weekdays: "9:00 AM - 6:00 PM", // Hardcoded for now, could be in DB
+            },
+            vaccines: (data.vaccines || []).map((v: any) => ({
+              name: v.name,
+              available: v.stock > 0,
+              price: "Free", // Adjust if needed
+            })),
+            description: `${data.name} is a verified vaccination facility located in ${data.address}.`,
+            features: [
+              "Digital vaccination certificates",
+              "Experienced medical staff",
+              "Wheelchair accessible",
+            ],
+            availableSlots: 24, // Could be dynamic
+          };
+          setCenter(mappedData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch center details", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCenterDetails();
+  }, [centerId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!center) {
+    return <CenterNotFound />;
+  }
 
   return (
     <div className="min-h-screen">

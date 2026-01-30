@@ -17,8 +17,6 @@ const AppSidebar = () => {
 
   const menuItems = DashboardRoleBasedNavigationLinks[userRole!];
 
-  console.log("from app sidebar", menuItems);
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>

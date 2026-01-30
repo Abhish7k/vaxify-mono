@@ -8,12 +8,68 @@ import {
   Hash,
   Calendar,
   ClipboardList,
+  Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { userApi, type UserProfile, type UserStats } from "@/api/user.api";
+import { useEffect, useState } from "react";
 
 export default function UserInfoCard() {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [profileData, statsData] = await Promise.all([
+          userApi.getProfile(),
+          userApi.getStats(),
+        ]);
+        setProfile(profileData);
+        setStats(statsData);
+      } catch (error) {
+        console.error("Failed to fetch profile", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!profile || !stats) return null;
+
+  const basicInfo = [
+    { icon: User, label: "Name", value: profile.name },
+    { icon: Mail, label: "Email", value: profile.email },
+    { icon: Phone, label: "Phone", value: profile.phone || "Not provided" },
+    { icon: MapPin, label: "Address", value: "India" }, // address not in DTO yet
+  ];
+
+  const metadataInfo = [
+    { icon: Hash, label: "User ID", value: `USR-${profile.id}` },
+    {
+      icon: Calendar,
+      label: "Joined",
+      value: new Date(profile.createdAt).toLocaleDateString(),
+    },
+    {
+      icon: ClipboardList,
+      label: "Appointments",
+      value: stats.totalAppointments,
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -61,9 +117,9 @@ export default function UserInfoCard() {
           {/* header */}
           <div className="flex flex-col items-center space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">{userStats.name}</h2>
+              <h2 className="text-xl font-semibold">{profile.name}</h2>
               <Badge className="border border-blue-600/20 bg-blue-600/10 text-blue-600 focus-visible:ring-blue-600/20 dark:bg-blue-400/10 dark:text-blue-400 dark:focus-visible:ring-blue-400/40">
-                {userStats.role}
+                {profile.role}
               </Badge>
             </div>
           </div>
@@ -131,31 +187,3 @@ function InfoRow({
     </div>
   );
 }
-
-const userStats = {
-  userId: "USR-102938",
-  joinedDate: "Jan 2026",
-  totalAppointments: 5,
-  name: "Abhishek",
-  email: "abhi@email.com",
-  role: "USER",
-  phone: "+91-XXXXXXXXXX",
-  address: "Pune, IN",
-};
-
-const basicInfo = [
-  { icon: User, label: "Name", value: userStats.name },
-  { icon: Mail, label: "Email", value: userStats.email },
-  { icon: Phone, label: "Phone", value: userStats.phone },
-  { icon: MapPin, label: "Address", value: userStats.address },
-];
-
-const metadataInfo = [
-  { icon: Hash, label: "User ID", value: userStats.userId },
-  { icon: Calendar, label: "Joined", value: userStats.joinedDate },
-  {
-    icon: ClipboardList,
-    label: "Appointments",
-    value: userStats.totalAppointments,
-  },
-];

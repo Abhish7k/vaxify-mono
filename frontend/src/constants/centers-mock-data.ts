@@ -3,6 +3,9 @@ export type Center = {
   name: string;
   address: string;
   availableVaccines?: string[];
+  vaccines?: any[];
+  staffEmail?: string;
+  staffPhone?: string;
 };
 
 export const centersData: Center[] = [

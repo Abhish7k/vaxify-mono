@@ -1,6 +1,8 @@
-import AppointmentCard from "./AppointmentCard";
+import { useMemo } from "react";
+import { DataTable } from "@/components/ui/data-table";
 import EmptyAppointmentsState from "./EmptyAppointmentsState";
 import type { AppointmentStatus } from "./MyAppointmentsTabsSection";
+import { getMyAppointmentsColumns } from "./MyAppointmentsColumns";
 
 export default function MyAppointmentsListSection({
   appointments,
@@ -14,6 +16,16 @@ export default function MyAppointmentsListSection({
     (appointment) => appointment.status === activeStatus,
   );
 
+  const columns = useMemo(
+    () =>
+      getMyAppointmentsColumns({
+        onCancelAppointment,
+        onViewTicket,
+        onViewCenter,
+      }),
+    [onCancelAppointment, onViewTicket, onViewCenter],
+  );
+
   if (filteredAppointments.length === 0) {
     return (
       <EmptyAppointmentsState
@@ -24,16 +36,13 @@ export default function MyAppointmentsListSection({
   }
 
   return (
-    <div className="space-y-4">
-      {filteredAppointments.map((appointment) => (
-        <AppointmentCard
-          key={appointment.id}
-          appointment={appointment}
-          onViewCenter={() => onViewCenter(appointment.centerId)}
-          onCancel={() => onCancelAppointment(appointment)}
-          onViewTicket={() => onViewTicket(appointment.id)}
-        />
-      ))}
+    <div className="mt-6">
+      <DataTable
+        columns={columns}
+        data={filteredAppointments}
+        searchKey="centerName"
+        searchPlaceholder="Search centers..."
+      />
     </div>
   );
 }

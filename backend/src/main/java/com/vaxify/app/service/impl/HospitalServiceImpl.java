@@ -17,8 +17,10 @@ import com.vaxify.app.dtos.StaffHospitalRegistrationDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vaxify.app.repository.VaccineRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class HospitalServiceImpl implements HospitalService {
         private final HospitalRepository hospitalRepository;
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
+        private final VaccineRepository vaccineRepository;
 
         // for staff
         @Override
@@ -159,6 +162,20 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         private HospitalResponse toResponse(Hospital hospital) {
+                List<com.vaxify.app.dtos.VaccineResponseDTO> vaccines = vaccineRepository.findByHospital(hospital)
+                                .stream()
+                                .map(v -> com.vaxify.app.dtos.VaccineResponseDTO.builder()
+                                                .id(v.getId())
+                                                .name(v.getName())
+                                                .type(v.getType())
+                                                .manufacturer(v.getManufacturer())
+                                                .stock(v.getStock())
+                                                .capacity(v.getCapacity())
+                                                .lastUpdated(v.getCreatedAt() != null ? v.getCreatedAt().toString()
+                                                                : null)
+                                                .build())
+                                .collect(Collectors.toList());
+
                 return HospitalResponse.builder()
                                 .id(hospital.getId())
                                 .name(hospital.getName())
@@ -174,6 +191,7 @@ public class HospitalServiceImpl implements HospitalService {
                                 .staffPhone(hospital.getStaffUser() != null ? hospital.getStaffUser().getPhone() : null)
                                 .staffCreatedAt(hospital.getStaffUser() != null ? hospital.getStaffUser().getCreatedAt()
                                                 : null)
+                                .availableVaccines(vaccines)
                                 .build();
         }
 

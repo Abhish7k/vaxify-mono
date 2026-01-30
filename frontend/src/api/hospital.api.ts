@@ -17,7 +17,9 @@ export const hospitalApi = {
       id: String(h.id),
       name: h.name,
       address: h.address,
-      availableVaccines: [], // will be fetched separately or updated in dto later
+      availableVaccines: (h.availableVaccines || []).map((v: any) => v.name),
+      staffEmail: h.staffEmail,
+      staffPhone: h.staffPhone,
     }));
   },
 
@@ -34,11 +36,15 @@ export const hospitalApi = {
     if (!response.data) return undefined;
 
     return {
+      ...response.data,
       id: String(response.data.id),
-      name: response.data.name,
-      address: response.data.address,
-      availableVaccines: [],
-    };
+      // keep availableVaccines as string[] for compatibility with Center type
+      availableVaccines: (response.data.availableVaccines || []).map(
+        (v: any) => v.name,
+      ),
+      // add rawVaccines for detailed view
+      vaccines: response.data.availableVaccines,
+    } as any;
   },
 
   // register new hospital

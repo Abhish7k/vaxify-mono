@@ -42,19 +42,19 @@ export default function StaffStatsGrid({
       title: "Upcoming Appointments",
       value: upcoming,
       subtitle: "Pending action",
-      icon: "/icons/center.png",
+      icon: "/icons/upcoming.png",
     },
     {
       title: "Bookings Today",
       value: todayAppointments,
       subtitle: "Scheduled for today",
-      icon: "/icons/booster.png",
+      icon: "/icons/checklist.png",
     },
     {
       title: "Low Stock Alerts",
       value: lowStockCount,
       subtitle: "Critical inventory items",
-      icon: "/icons/hospital-1.png",
+      icon: "/icons/low-stock.png",
     },
   ];
 
