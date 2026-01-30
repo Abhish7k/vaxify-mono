@@ -57,7 +57,11 @@ const RegisterUser = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      const { confirmPassword, ...registerData } = formData;
+      const { confirmPassword, firstName, lastName, ...rest } = formData;
+      const registerData = {
+        ...rest,
+        name: `${firstName} ${lastName}`,
+      };
 
       await registerUser(registerData);
 

@@ -178,7 +178,7 @@ export function Features() {
                   {/* mock calendar component */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4 text-indigo-600" />
+                      <CalendarIcon className="h-4 w-4 text-indigo-400 mb-0.5" />
                       <span className="text-[11px] font-bold text-slate-700">
                         January 2026
                       </span>
@@ -207,7 +207,7 @@ export function Features() {
                           className={cn(
                             "h-6 w-6 flex items-center justify-center rounded-md text-[10px] cursor-pointer transition-all duration-200",
                             isSelected
-                              ? "bg-indigo-600 text-white shadow-md font-bold scale-110"
+                              ? "bg-indigo-400 text-white shadow-md font-bold scale-110"
                               : "text-slate-600 hover:bg-slate-100",
                           )}
                         >

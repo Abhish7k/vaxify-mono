@@ -6,6 +6,7 @@ export interface AuthUser {
   role: Role;
   name?: string;
   phone?: string;
+  createdAt?: string;
 }
 
 export interface LoginResponse {

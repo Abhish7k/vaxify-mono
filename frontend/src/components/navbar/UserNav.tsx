@@ -37,13 +37,12 @@ const UserNav = () => {
           </Avatar>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent side="bottom" align="end" className="min-w-52">
+        <DropdownMenuContent side="bottom" align="end" className="min-w-52 p-2">
           <DropdownMenuLabel className="pl-2 pr-4">
             <div className="flex flex-col gap-1">
-              <p className="font-medium leading-none capitalize">
-                {/* {user?.name} */}
-                Full Name
-              </p>
+              <div className="font-medium leading-none capitalize mb-1 flex items-center gap-2">
+                {user?.name}
+              </div>
 
               <p className="text-xs leading-none text-muted-foreground max-w-40 truncate">
                 {user?.email}

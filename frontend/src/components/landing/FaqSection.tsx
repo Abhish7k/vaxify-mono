@@ -68,7 +68,7 @@ export function FaqSection() {
                   value={item.id}
                   className="border-slate-100 py-2"
                 >
-                  <AccordionTrigger className="text-slate-900 font-medium hover:no-underline hover:text-indigo-600 transition-colors py-4">
+                  <AccordionTrigger className="text-slate-900 font-medium hover:no-underline hover:text-indigo-600 transition-colors py-4 cursor-pointer">
                     {item.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-500 leading-relaxed pb-6">

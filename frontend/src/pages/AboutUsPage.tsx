@@ -108,20 +108,20 @@ export default function AboutUsPage() {
 const team = [
   {
     id: 1,
-    name: "Abhishek B",
-    github: "https://github.com/your-github",
-    linkedin: "https://linkedin.com/in/your-linkedin",
+    name: "Indu",
+    github: "https://github.com/indu61",
+    linkedin: "https://www.linkedin.com/in/indu-gadagi/",
   },
   {
     id: 2,
-    name: "Teammate One",
-    github: "https://github.com/teammate1",
-    linkedin: "https://linkedin.com/in/teammate1",
+    name: "Abhishek",
+    github: "https://github.com/abhish7k",
+    linkedin: "https://www.linkedin.com/in/abhish7k/",
   },
   {
     id: 3,
-    name: "Teammate Two",
-    github: "https://github.com/teammate2",
-    linkedin: "https://linkedin.com/in/teammate2",
+    name: "Rahul",
+    github: "http://github.com/rahulkhadeeng/",
+    linkedin: "https://www.linkedin.com/in/contactrahulkhade/",
   },
 ];

@@ -58,11 +58,6 @@ export const USER_NAV_DROPDOWN_ITEMS = {
       icon: LayoutDashboard,
     },
     {
-      name: "Profile",
-      href: "/admin/profile",
-      icon: User,
-    },
-    {
       name: "Hospitals",
       href: "/admin/hospitals",
       icon: Hospital,
@@ -76,6 +71,11 @@ export const USER_NAV_DROPDOWN_ITEMS = {
       name: "Analytics",
       href: "/admin/analytics",
       icon: BarChart,
+    },
+    {
+      name: "Profile",
+      href: "/admin/profile",
+      icon: User,
     },
   ],
 } as const;

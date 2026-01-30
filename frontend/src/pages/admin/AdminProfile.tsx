@@ -4,8 +4,22 @@ import { ShieldCheck, Mail, Calendar, Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/auth/useAuth";
+import { format } from "date-fns";
 
 export default function AdminProfileCard() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
+  const joinedDate = user.createdAt
+    ? format(new Date(user.createdAt), "MMM yyyy")
+    : "Jan 2026";
+
+  const formattedRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+
   return (
     <motion.div
       // card fades in + scales up on load
@@ -39,7 +53,7 @@ export default function AdminProfileCard() {
           className="relative z-10 flex justify-center mt-5"
         >
           <img
-            src={admin.icon}
+            src="/icons/profile.png"
             alt="Admin profile"
             className="h-32 w-32 object-contain"
           />
@@ -54,30 +68,32 @@ export default function AdminProfileCard() {
         >
           <div className="flex flex-col items-center space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">{admin.name}</h2>
+              <h2 className="text-xl font-semibold">{user.name || "Admin"}</h2>
               <Badge variant="outline" className="gap-1">
                 <ShieldCheck className="h-4 w-4" />
-                Admin
+                {formattedRole}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{admin.role}</p>
+            <p className="text-sm text-muted-foreground">
+              {user.role === "admin" ? "System Administrator" : formattedRole}
+            </p>
           </div>
 
           <div className="mt-6 space-y-4 text-sm text-left">
             <InfoRow
               icon={<Mail className="h-4 w-4" />}
               label="Email"
-              value={admin.email}
+              value={user.email}
             />
             <InfoRow
               icon={<Calendar className="h-4 w-4" />}
               label="Admin Since"
-              value={admin.since}
+              value={joinedDate}
             />
             <InfoRow
               icon={<Activity className="h-4 w-4" />}
               label="Platform"
-              value={admin.platform}
+              value="Vaxify"
             />
           </div>
         </motion.div>
@@ -86,22 +102,12 @@ export default function AdminProfileCard() {
   );
 }
 
-// admin config
-const admin = {
-  name: "Abhishek B",
-  role: "System Administrator",
-  email: "admin@vaxify.com",
-  since: "Jan 2026",
-  platform: "Vaxify",
-  icon: "/icons/profile.png",
-};
-
 // hover animation variants
 const iconAnimation: Variants = {
   initial: { scale: 1, y: 0 },
   hover: {
-    scale: 1.2,
-    y: -20,
+    scale: 1.1,
+    y: -10,
     transition: { type: "spring", stiffness: 200, damping: 15 },
   },
 };
@@ -126,8 +132,3 @@ function InfoRow({
     </div>
   );
 }
-
-// animation flow
-// 0.0s: card fades in + scales (0.6s total)
-// 0.2s: icon pops from tiny → normal (0.4s)
-// 0.3s: content slides up from 30px below (0.5s)

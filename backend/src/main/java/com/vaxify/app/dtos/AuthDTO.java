@@ -10,4 +10,5 @@ public class AuthDTO {
     private String name;
     private String email;
     private String role;
+    private String createdAt;
 }
