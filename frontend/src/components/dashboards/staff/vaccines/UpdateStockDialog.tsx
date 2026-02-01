@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { vaccineApi } from "@/api/vaccine.api";
 import type { Vaccine } from "@/types/vaccine";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface UpdateStockDialogProps {
   vaccine: Vaccine | null;
@@ -21,41 +24,50 @@ interface UpdateStockDialogProps {
   onSuccess: () => void;
 }
 
+// static base schema
+const baseSchema = z.object({
+  stock: z.coerce.number().min(0, "Stock cannot be negative"),
+});
+
+type UpdateStockFormValues = z.infer<typeof baseSchema>;
+
 export function UpdateStockDialog({
   vaccine,
   onClose,
   onSuccess,
 }: UpdateStockDialogProps) {
-  const [loading, setLoading] = useState(false);
-  const [stock, setStock] = useState(0);
-
-  useEffect(() => {
-    if (vaccine) {
-      setStock(vaccine.stock);
-    }
+  // dynamic refinement based on vaccine capacity
+  const updateStockSchema = useMemo(() => {
+    return baseSchema.refine((data) => data.stock <= (vaccine?.capacity || 0), {
+      message: `Stock cannot exceed capacity (${vaccine?.capacity ?? 0})`,
+      path: ["stock"],
+    });
   }, [vaccine]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<UpdateStockFormValues>({
+    resolver: zodResolver(updateStockSchema as any),
+    defaultValues: { stock: 0 },
+  });
 
+  // update form default value when vaccine changes
+  useEffect(() => {
+    if (vaccine) {
+      reset({ stock: vaccine.stock });
+    }
+  }, [vaccine, reset]);
+
+  const onSubmit = async (data: UpdateStockFormValues) => {
     if (!vaccine) return;
 
-    if (stock < 0) {
-      toast.error("Stock details cannot be negative", {
-        style: {
-          backgroundColor: "#ffe5e5",
-          color: "#b00000",
-        },
-      });
-
-      return;
-    }
-
-    setLoading(true);
     try {
       await vaccineApi.updateStock({
         vaccineId: vaccine.id,
-        quantity: stock,
+        quantity: data.stock,
       });
 
       toast.success(`Stock updated for ${vaccine.name}`, {
@@ -66,24 +78,27 @@ export function UpdateStockDialog({
       });
 
       onSuccess();
-
       onClose();
     } catch (error) {
       console.error(error);
-
       toast.error("Failed to update stock", {
         style: {
           backgroundColor: "#ffe5e5",
           color: "#b00000",
         },
       });
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+      reset();
     }
   };
 
   return (
-    <Dialog open={!!vaccine} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={!!vaccine} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Vaccine Stock</DialogTitle>
@@ -92,7 +107,7 @@ export function UpdateStockDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="stock">Current Stock</Label>
 
@@ -100,11 +115,14 @@ export function UpdateStockDialog({
               id="stock"
               type="number"
               min="0"
-              value={stock}
-              onChange={(e) => setStock(parseInt(e.target.value) || 0)}
-              disabled={loading}
+              {...register("stock")}
+              disabled={isSubmitting}
               autoFocus
             />
+
+            {errors.stock && (
+              <p className="text-sm text-destructive">{errors.stock.message}</p>
+            )}
 
             {vaccine && (
               <p className="text-xs text-muted-foreground">
@@ -118,15 +136,17 @@ export function UpdateStockDialog({
               type="button"
               variant="outline"
               onClick={onClose}
-              disabled={loading}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
 
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
 
-              {loading ? "Updating..." : "Update Stock"}
+              {isSubmitting ? "Updating..." : "Update Stock"}
             </Button>
           </DialogFooter>
         </form>

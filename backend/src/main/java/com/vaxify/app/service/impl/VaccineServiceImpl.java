@@ -41,6 +41,8 @@ public class VaccineServiceImpl implements VaccineService {
         if (vaccine.getCapacity() == null)
             vaccine.setCapacity(0);
 
+        validateStockAndCapacity(vaccine.getStock(), vaccine.getCapacity());
+
         return toResponse(vaccineRepository.save(vaccine));
     }
 
@@ -56,8 +58,30 @@ public class VaccineServiceImpl implements VaccineService {
             throw new RuntimeException("Unauthorized: This vaccine does not belong to your hospital");
         }
 
+        // map updates
         modelMapper.map(dto, vaccine);
+
+        // defaults if null (in case mapping set them to null or they were null)
+        if (vaccine.getStock() == null)
+            vaccine.setStock(0);
+        if (vaccine.getCapacity() == null)
+            vaccine.setCapacity(0);
+
+        validateStockAndCapacity(vaccine.getStock(), vaccine.getCapacity());
+
         return toResponse(vaccineRepository.save(vaccine));
+    }
+
+    private void validateStockAndCapacity(Integer stock, Integer capacity) {
+        if (stock < 0) {
+            throw new RuntimeException("Stock cannot be negative");
+        }
+        if (capacity <= 0) {
+            throw new RuntimeException("Capacity must be greater than zero");
+        }
+        if (stock > capacity) {
+            throw new RuntimeException("Stock cannot be more than the capacity");
+        }
     }
 
     @Override

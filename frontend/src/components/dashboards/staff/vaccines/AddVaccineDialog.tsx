@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { vaccineApi } from "@/api/vaccine.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,35 +21,72 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface AddVaccineDialogProps {
   onSuccess: () => void;
 }
 
-export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [newVaccine, setNewVaccine] = useState({
-    name: "",
-    type: "Viral Vector",
-    manufacturer: "",
-    stock: 0,
-    capacity: 0,
+// zod schema
+const addVaccineSchema = z
+  .object({
+    name: z.string().min(1, "Vaccine name is required"),
+    type: z.string().min(1, "Vaccine type is required"),
+    manufacturer: z.string().min(1, "Manufacturer is required"),
+    stock: z.coerce.number().min(0, "Stock cannot be negative"),
+    capacity: z.coerce.number().min(1, "Capacity must be greater than zero"),
+  })
+  .refine((data) => data.stock <= data.capacity, {
+    message: "Stock cannot exceed capacity",
+    path: ["stock"], // Shows error on stock field
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+type AddVaccineFormValues = z.infer<typeof addVaccineSchema>;
 
-    if (!newVaccine.name || !newVaccine.manufacturer) {
-      toast.error("Please fill in all fields");
+export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [isOtherType, setIsOtherType] = useState(false);
 
-      return;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<AddVaccineFormValues>({
+    resolver: zodResolver(addVaccineSchema as any),
+    defaultValues: {
+      name: "",
+      type: "Viral Vector",
+      manufacturer: "",
+      stock: 0,
+      capacity: 0,
+    },
+  });
+
+  const typeValue = watch("type");
+
+  // handle "other" type selection logic
+  useEffect(() => {
+    const standardTypes = [
+      "Inactivated Virus",
+      "Viral Vector",
+      "mRNA",
+      "Protein Subunit",
+    ];
+    if (typeValue && !standardTypes.includes(typeValue)) {
+      setIsOtherType(true);
+    } else {
+      setIsOtherType(false);
     }
+  }, [typeValue]);
 
-    setLoading(true);
+  const onSubmit = async (data: AddVaccineFormValues) => {
     try {
-      const result = await vaccineApi.addVaccine(newVaccine);
+      const result = await vaccineApi.addVaccine(data);
 
       toast.success(`${result.name} added to inventory`, {
         style: {
@@ -59,15 +96,7 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
       });
 
       setOpen(false);
-
-      setNewVaccine({
-        name: "",
-        type: "Viral Vector",
-        manufacturer: "",
-        stock: 0,
-        capacity: 0,
-      });
-
+      reset(); // reset form
       onSuccess();
     } catch (error) {
       toast.error("Failed to add vaccine", {
@@ -76,10 +105,17 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
           color: "#b00000",
         },
       });
-
       console.error(error);
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleSelectChange = (value: string) => {
+    if (value === "Other") {
+      setIsOtherType(true);
+      setValue("type", ""); // clear for manual input
+    } else {
+      setIsOtherType(false);
+      setValue("type", value, { shouldValidate: true });
     }
   };
 
@@ -100,41 +136,26 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="name">Vaccine Name</Label>
             <Input
               id="name"
               placeholder="e.g. Covaxin"
-              value={newVaccine.name}
-              onChange={(e) =>
-                setNewVaccine({ ...newVaccine, name: e.target.value })
-              }
-              disabled={loading}
+              {...register("name")}
+              disabled={isSubmitting}
             />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="grid gap-2">
             <Label htmlFor="type">Vaccine Type</Label>
             <Select
-              disabled={loading}
-              value={
-                [
-                  "Inactivated Virus",
-                  "Viral Vector",
-                  "mRNA",
-                  "Protein Subunit",
-                ].includes(newVaccine.type)
-                  ? newVaccine.type
-                  : "Other"
-              }
-              onValueChange={(value) => {
-                if (value === "Other") {
-                  setNewVaccine({ ...newVaccine, type: "" });
-                } else {
-                  setNewVaccine({ ...newVaccine, type: value });
-                }
-              }}
+              disabled={isSubmitting}
+              value={isOtherType ? "Other" : typeValue}
+              onValueChange={handleSelectChange}
             >
               <SelectTrigger id="type" className="w-full">
                 <SelectValue placeholder="Select type" />
@@ -152,20 +173,18 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
             </Select>
 
             {/* show input if custom type is needed */}
-            {![
-              "Inactivated Virus",
-              "Viral Vector",
-              "mRNA",
-              "Protein Subunit",
-            ].includes(newVaccine.type) && (
+            {isOtherType && (
               <Input
                 placeholder="Enter Custom Vaccine Type"
-                value={newVaccine.type}
+                value={typeValue}
                 onChange={(e) =>
-                  setNewVaccine({ ...newVaccine, type: e.target.value })
+                  setValue("type", e.target.value, { shouldValidate: true })
                 }
                 className="mt-2"
               />
+            )}
+            {errors.type && (
+              <p className="text-sm text-destructive">{errors.type.message}</p>
             )}
           </div>
           <div className="grid gap-2">
@@ -173,12 +192,14 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
             <Input
               id="manufacturer"
               placeholder="e.g. Bharat Biotech"
-              value={newVaccine.manufacturer}
-              onChange={(e) =>
-                setNewVaccine({ ...newVaccine, manufacturer: e.target.value })
-              }
-              disabled={loading}
+              {...register("manufacturer")}
+              disabled={isSubmitting}
             />
+            {errors.manufacturer && (
+              <p className="text-sm text-destructive">
+                {errors.manufacturer.message}
+              </p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="stock">Initial Stock</Label>
@@ -186,15 +207,12 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
               id="stock"
               type="number"
               min="0"
-              value={newVaccine.stock}
-              onChange={(e) =>
-                setNewVaccine({
-                  ...newVaccine,
-                  stock: parseInt(e.target.value) || 0,
-                })
-              }
-              disabled={loading}
+              {...register("stock")}
+              disabled={isSubmitting}
             />
+            {errors.stock && (
+              <p className="text-sm text-destructive">{errors.stock.message}</p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="capacity">Storage Capacity</Label>
@@ -203,27 +221,26 @@ export function AddVaccineDialog({ onSuccess }: AddVaccineDialogProps) {
               type="number"
               min="0"
               placeholder="Total storage limit"
-              value={newVaccine.capacity}
-              onChange={(e) =>
-                setNewVaccine({
-                  ...newVaccine,
-                  capacity: parseInt(e.target.value) || 0,
-                })
-              }
-              disabled={loading}
+              {...register("capacity")}
+              disabled={isSubmitting}
             />
+            {errors.capacity && (
+              <p className="text-sm text-destructive">
+                {errors.capacity.message}
+              </p>
+            )}
           </div>
           <DialogFooter className="pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={loading}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : "Add Vaccine"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Vaccine"}
             </Button>
           </DialogFooter>
         </form>
