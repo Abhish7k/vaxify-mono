@@ -12,4 +12,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findBySlotCenterId(Long centerId);
 
     List<Appointment> findByUserEmail(String email);
+
+    List<Appointment> findByVaccineIn(List<com.vaxify.app.entities.Vaccine> vaccines);
 }

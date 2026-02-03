@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vaxify.app.repository.VaccineRepository;
+import com.vaxify.app.repository.AppointmentRepository;
+import com.vaxify.app.repository.SlotRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ public class HospitalServiceImpl implements HospitalService {
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final VaccineRepository vaccineRepository;
+        private final AppointmentRepository appointmentRepository;
+        private final SlotRepository slotRepository;
 
         private final S3Service s3Service;
         private final com.vaxify.app.service.EmailService emailService;
@@ -292,7 +296,17 @@ public class HospitalServiceImpl implements HospitalService {
 
                 // delete all vaccines associated with this hospital first
                 List<com.vaxify.app.entities.Vaccine> vaccines = vaccineRepository.findByHospital(hospital);
+
+                // delete appointments first (Constraint fix)
+                List<com.vaxify.app.entities.Appointment> appointments = appointmentRepository
+                                .findByVaccineIn(vaccines);
+                appointmentRepository.deleteAll(appointments);
+
                 vaccineRepository.deleteAll(vaccines);
+
+                // delete slots
+                List<com.vaxify.app.entities.Slot> slots = slotRepository.findByCenterId(id);
+                slotRepository.deleteAll(slots);
 
                 // get associated staff user before deleting hospital
                 User staffUser = hospital.getStaffUser();
