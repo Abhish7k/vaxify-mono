@@ -118,6 +118,6 @@ cd backend
 
 | Name         | Role / Contribution | GitHub                                        |
 | ------------ | ------------------- | --------------------------------------------- |
-| **Abhishek** | Frontend & DevOps   | [@username](https://github.com/Abhish7k)      |
-| **Indu**     | Backend & Database  | [@username](https://github.com/indu61)        |
-| **Rahul**    | Frontend & UI       | [@username](https://github.com/rahulkhadeeng) |
+| **Abhishek** | Frontend & DevOps   | [@abhish7k](https://github.com/Abhish7k)      |
+| **Indu**     | Backend & Database  | [@indu61](https://github.com/indu61)        |
+| **Rahul**    | Frontend & UI       | [@rahulkhadeeeng](https://github.com/rahulkhadeeng) |
