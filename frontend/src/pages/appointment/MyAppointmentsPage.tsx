@@ -34,11 +34,23 @@ export default function MyAppointmentsPage() {
   const fetchAppointments = async () => {
     try {
       setIsLoading(true);
-      const minDelay = new Promise((resolve) => setTimeout(resolve, 400));
-      const [data] = await Promise.all([
-        appointmentApi.getMyAppointments(),
-        minDelay,
-      ]);
+      const data = await appointmentApi.getMyAppointments();
+      setAppointments(data);
+    } catch (error) {
+      console.error("Failed to fetch appointments", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setIsLoading(true);
+
+      const data = await appointmentApi.getMyAppointments();
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setAppointments(data);
     } catch (error) {
       console.error("Failed to fetch appointments", error);
@@ -72,14 +84,16 @@ export default function MyAppointmentsPage() {
     <div className="space-y-8 container mx-auto mt-10 px-4 sm:px-8 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* header */}
       <MyAppointmentsHeaderSection
-        onRefresh={fetchAppointments}
+        onRefresh={handleRefresh}
         loading={isLoading}
       />
+
       {/* tabs */}
       <MyAppointmentsTabsSection
         value={activeStatus}
         onChange={setActiveStatus}
       />
+
       {/* list */}
       {isLoading ? (
         <MyAppointmentsSkeleton />

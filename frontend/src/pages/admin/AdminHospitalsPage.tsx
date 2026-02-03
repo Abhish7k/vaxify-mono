@@ -44,11 +44,28 @@ const AdminHospitalsPage = () => {
     setLoading(true);
 
     try {
-      const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
-      const [data] = await Promise.all([
-        hospitalApi.getAdminHospitals(),
-        minDelay,
-      ]);
+      const data = await hospitalApi.getAdminHospitals();
+      setHospitals(data);
+    } catch (error) {
+      toast.error("Failed to load hospitals", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+
+    try {
+      const data = await hospitalApi.getAdminHospitals();
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setHospitals(data);
     } catch (error) {
       toast.error("Failed to load hospitals", {
@@ -142,7 +159,7 @@ const AdminHospitalsPage = () => {
       <motion.div variants={item}>
         <AdminHospitalsHeaderSection
           loading={loading}
-          onRefresh={fetchHospitals}
+          onRefresh={handleRefresh}
         />
       </motion.div>
 

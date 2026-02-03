@@ -2,8 +2,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import BookingHeaderSection from "@/components/appointment/book/BookingHeaderSection";
 import CenterNotFound from "@/components/centers/center-details/CenterNotFound";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, XCircle } from "lucide-react";
 import { hospitalApi } from "@/api/hospital.api";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import BookingDateAndSlotSection from "@/components/appointment/book/BookingSlotSection";
 import VaccineSelectionSection from "@/components/appointment/book/VaccineSelectionSection";
@@ -44,6 +46,7 @@ const AppointmentBookingPage = () => {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingVaccines, setIsLoadingVaccines] = useState(true);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const [selectedVaccineId, setSelectedVaccineId] = useState<string | null>(
@@ -79,11 +82,14 @@ const AppointmentBookingPage = () => {
 
     const fetchVaccines = async () => {
       try {
+        setIsLoadingVaccines(true);
         const centerVaccines =
           await vaccineApi.getVaccinesByHospitalId(centerId);
         setVaccines(centerVaccines);
       } catch (error) {
         console.error("failed to fetch vaccines", error);
+      } finally {
+        setIsLoadingVaccines(false);
       }
     };
 
@@ -154,39 +160,67 @@ const AppointmentBookingPage = () => {
       </motion.div>
 
       <div className="flex flex-col md:flex-row justify-between gap-10 px-5 mt-16 mb-32">
-        <motion.div className="w-full" variants={itemVariants}>
-          <VaccineSelectionSection
-            vaccines={vaccines.map((v) => ({
-              id: v.id,
-              name: v.name,
-              description: v.type, // mapping type to description for ui
-            }))}
-            selectedVaccineId={selectedVaccineId}
-            onSelect={(id) => {
-              setSelectedVaccineId(id);
+        {isLoadingVaccines ? (
+          <div className="w-full h-40 flex items-center justify-center">
+            <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : vaccines.length === 0 ? (
+          <div className="w-full flex justify-center">
+            <Card className="max-w-md w-full p-10 flex flex-col items-center text-center text-muted-foreground bg-muted/30 border-dashed">
+              <XCircle className="w-12 h-12 mb-4 opacity-20" />
+              <h3 className="text-lg font-medium text-foreground">
+                Out of Stock
+              </h3>
+              <p className="mt-2 text-sm">
+                There are no vaccines currently available for booking at this
+                center.
+              </p>
+              <Button
+                variant="outline"
+                className="mt-6"
+                onClick={() => navigate(-1)}
+              >
+                Go Back
+              </Button>
+            </Card>
+          </div>
+        ) : (
+          <>
+            <motion.div className="w-full" variants={itemVariants}>
+              <VaccineSelectionSection
+                vaccines={vaccines.map((v) => ({
+                  id: v.id,
+                  name: v.name,
+                  description: v.type, // mapping type to description for ui
+                }))}
+                selectedVaccineId={selectedVaccineId}
+                onSelect={(id) => {
+                  setSelectedVaccineId(id);
 
-              // do not reset date, but maybe reset slot
-              // keeping date is better ux
+                  // do not reset date, but maybe reset slot
+                  // keeping date is better ux
 
-              setSelectedSlot(null);
-            }}
-          />
-        </motion.div>
+                  setSelectedSlot(null);
+                }}
+              />
+            </motion.div>
 
-        <motion.div className="w-full" variants={itemVariants}>
-          <BookingDateAndSlotSection
-            selectedDate={selectedDate}
-            selectedSlot={selectedSlot}
-            availableSlots={availableSlots}
-            onDateSelect={(date) => {
-              setSelectedDate(date);
-              setSelectedSlot(null);
-            }}
-            onSlotSelect={setSelectedSlot}
-            onResetSlot={() => setSelectedSlot(null)}
-            isLoadingSlots={isLoadingSlots}
-          />
-        </motion.div>
+            <motion.div className="w-full" variants={itemVariants}>
+              <BookingDateAndSlotSection
+                selectedDate={selectedDate}
+                selectedSlot={selectedSlot}
+                availableSlots={availableSlots}
+                onDateSelect={(date) => {
+                  setSelectedDate(date);
+                  setSelectedSlot(null);
+                }}
+                onSlotSelect={setSelectedSlot}
+                onResetSlot={() => setSelectedSlot(null)}
+                isLoadingSlots={isLoadingSlots}
+              />
+            </motion.div>
+          </>
+        )}
       </div>
 
       <motion.div variants={fixedItemVariants}>

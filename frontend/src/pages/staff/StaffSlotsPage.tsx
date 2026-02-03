@@ -85,6 +85,32 @@ export default function StaffSlotsPage() {
     }
   };
 
+  const handleRefresh = async () => {
+    if (!hospitalId) return;
+    try {
+      setLoading(true);
+
+      const data = await slotsApi.getSlotsByHospital(hospitalId);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // sort by date and time
+      data.sort((a, b) => {
+        const dateA = new Date(a.date + "T" + a.startTime);
+        const dateB = new Date(b.date + "T" + b.startTime);
+        return dateA.getTime() - dateB.getTime();
+      });
+
+      setSlots(data);
+    } catch (error) {
+      console.error(error);
+
+      toast.error("Failed to fetch slots");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const init = async () => {
     try {
       const hospital = await hospitalApi.getMyHospital();
@@ -176,7 +202,7 @@ export default function StaffSlotsPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => hospitalId && fetchSlots(hospitalId)}
+            onClick={handleRefresh}
             disabled={loading}
           >
             <RefreshCcw

@@ -38,11 +38,31 @@ const AdminUsersPage = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
-      const [data] = await Promise.all([userApi.getAllUsers(), minDelay]);
+
+      const data = await userApi.getAllUsers();
+
       setUsers(data);
     } catch (error) {
       console.error("Failed to fetch users", error);
+
+      toast.error("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setLoading(true);
+
+      const data = await userApi.getAllUsers();
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setUsers(data);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+
       toast.error("Failed to load users");
     } finally {
       setLoading(false);
@@ -96,7 +116,7 @@ const AdminUsersPage = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={fetchUsers}
+          onClick={handleRefresh}
           disabled={loading}
           className="gap-2 text-xs sm:text-sm transition-all min-w-[120px]"
         >

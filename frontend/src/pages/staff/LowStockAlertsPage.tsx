@@ -35,6 +35,28 @@ export default function LowStockAlertsPage() {
     }
   };
 
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      const data = await vaccineApi.getMyVaccines();
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setVaccines(data);
+    } catch (error) {
+      console.error("Fetch failed", error);
+
+      toast.error("Failed to fetch vaccines", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchVaccines();
   }, []);
@@ -92,7 +114,7 @@ export default function LowStockAlertsPage() {
         <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
           <Button
             variant="outline"
-            onClick={fetchVaccines}
+            onClick={handleRefresh}
             disabled={loading}
             className="h-10 w-full sm:w-auto"
           >
@@ -101,6 +123,7 @@ export default function LowStockAlertsPage() {
             />
             Refresh Data
           </Button>
+
           <Button
             onClick={() => navigate("/staff/vaccines")}
             className="h-10 w-full sm:w-auto"

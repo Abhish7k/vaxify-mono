@@ -52,16 +52,36 @@ public class AppointmentServiceImpl implements AppointmentService {
                         throw new VaxifyException("Selected slot is already full");
                 }
 
+                // check and deduct vaccine stock
+                if (vaccine.getStock() <= 0) {
+                        throw new VaxifyException("Vaccine is out of stock");
+                }
+
+                // Block booking if stock is critically low (< 20% of capacity)
+                if (vaccine.getCapacity() != null && vaccine.getCapacity() > 0
+                                && vaccine.getStock() < (vaccine.getCapacity() * 0.2)) {
+                        throw new VaxifyException("Booking suspended: Vaccine stock is critically low (< 20%)");
+                }
+
+                vaccine.setStock(vaccine.getStock() - 1);
+
+                vaccineRepository.save(vaccine);
+
+                checkStockAlerts(vaccine);
+
                 Appointment appointment = Appointment.builder().user(user).slot(selectedSlot).vaccine(vaccine)
                                 .status(AppointmentStatus.BOOKED).build();
 
                 selectedSlot.setBookedCount(selectedSlot.getBookedCount() + 1);
+
                 if (selectedSlot.getBookedCount() >= selectedSlot.getCapacity()) {
                         selectedSlot.setStatus(SlotStatus.FULL);
                 }
+
                 slotRepository.save(selectedSlot);
 
                 Appointment saved = appointmentRepository.save(appointment);
+
                 return mapToResponse(saved);
         }
 
@@ -85,6 +105,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 }
 
                 appointment.setStatus(AppointmentStatus.CANCELLED);
+
+                // refund vaccine stock
+                Vaccine vaccine = appointment.getVaccine();
+                vaccine.setStock(vaccine.getStock() + 1);
+                vaccineRepository.save(vaccine);
 
                 Slot slot = appointment.getSlot();
                 slot.setBookedCount(slot.getBookedCount() - 1);
@@ -123,21 +148,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
                         throw new VaxifyException("Appointment is already completed");
                 }
-
-                // automated vaccine stock deduction
-                Vaccine vaccine = appointment.getVaccine();
-
-                if (vaccine.getStock() <= 0) {
-                        throw new VaxifyException("Insufficient vaccine stock to complete this appointment");
-                }
-
-                // decrement stock
-                int newStock = vaccine.getStock() - 1;
-                vaccine.setStock(newStock);
-                vaccineRepository.save(vaccine);
-
-                // check stock alerts
-                checkStockAlerts(vaccine);
 
                 appointment.setStatus(AppointmentStatus.COMPLETED);
                 appointmentRepository.save(appointment);

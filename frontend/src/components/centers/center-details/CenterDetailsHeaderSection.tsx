@@ -83,9 +83,16 @@ const CenterDetailsHeaderSection = ({ center }: Props) => {
             <Button
               className="md:w-full cursor-pointer active:scale-95 transition-all duration-300 group text-sm"
               onClick={handleClick}
+              disabled={center.vaccines.length === 0}
             >
-              Book Appointment
-              <ChevronRight className="w-4 h-4 ml-1 mb-0.5 group-hover:translate-x-0.5 transition-all duration-300" />
+              {center.vaccines.length === 0 ? (
+                "Currently Unavailable"
+              ) : (
+                <>
+                  Book Appointment
+                  <ChevronRight className="w-4 h-4 ml-1 mb-0.5 group-hover:translate-x-0.5 transition-all duration-300" />
+                </>
+              )}
             </Button>
           </CardContent>
         </Card>

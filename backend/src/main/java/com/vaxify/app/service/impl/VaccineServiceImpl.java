@@ -122,6 +122,13 @@ public class VaccineServiceImpl implements VaccineService {
     public List<VaccineResponseDTO> getAllVaccines() {
         return vaccineRepository.findAll()
                 .stream()
+                .filter(v -> {
+                    // filter out critical low stock vaccines (< 20%)
+                    if (v.getCapacity() != null && v.getCapacity() > 0) {
+                        return v.getStock() >= (v.getCapacity() * 0.2);
+                    }
+                    return true;
+                })
                 .map(this::toResponse)
                 .toList();
     }
@@ -145,6 +152,13 @@ public class VaccineServiceImpl implements VaccineService {
 
         return vaccineRepository.findByHospital(hospital)
                 .stream()
+                .filter(v -> {
+                    // filter out critical low stock vaccines (< 20%)
+                    if (v.getCapacity() != null && v.getCapacity() > 0) {
+                        return v.getStock() >= (v.getCapacity() * 0.2);
+                    }
+                    return true;
+                })
                 .map(this::toResponse)
                 .toList();
     }

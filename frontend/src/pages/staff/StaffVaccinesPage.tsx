@@ -22,6 +22,28 @@ export default function StaffVaccinesPage() {
     setLoading(true);
     try {
       const data = await vaccineApi.getMyVaccines();
+      setVaccines(data);
+    } catch (error) {
+      console.error("Fetch failed", error);
+
+      toast.error("Failed to fetch vaccines", {
+        style: {
+          backgroundColor: "#ffe5e5",
+          color: "#b00000",
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+
+    try {
+      const data = await vaccineApi.getMyVaccines();
+
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
       setVaccines(data);
     } catch (error) {
@@ -87,7 +109,7 @@ export default function StaffVaccinesPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchVaccines}
+            onClick={handleRefresh}
             disabled={loading}
           >
             <RefreshCcw
@@ -99,7 +121,7 @@ export default function StaffVaccinesPage() {
           <AddVaccineDialog onSuccess={fetchVaccines} />
         </div>
       </div>
-
+      //...
       <Card className="border-none shadow-none bg-card/50 backdrop-blur-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-medium flex items-center">
@@ -111,8 +133,8 @@ export default function StaffVaccinesPage() {
         <CardContent>
           {loading ? (
             <div className="space-y-4">
-              <div className="h-10 w-full bg-muted animate-pulse rounded" />
-              <div className="h-64 w-full bg-muted/50 animate-pulse rounded" />
+              <div className="h-10 w-full bg-muted animate-pulse rounded-xl" />
+              <div className="h-64 w-full bg-muted/50 animate-pulse rounded-xl" />
             </div>
           ) : (
             <DataTable
@@ -125,13 +147,11 @@ export default function StaffVaccinesPage() {
           )}
         </CardContent>
       </Card>
-
       <DeleteVaccineDialog
         vaccine={vaccineToDelete}
         onClose={() => setVaccineToDelete(null)}
         onSuccess={fetchVaccines}
       />
-
       <UpdateStockDialog
         vaccine={vaccineToUpdate}
         onClose={() => setVaccineToUpdate(null)}

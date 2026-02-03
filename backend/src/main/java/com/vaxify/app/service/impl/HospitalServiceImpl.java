@@ -69,7 +69,7 @@ public class HospitalServiceImpl implements HospitalService {
                                 .build();
 
                 Hospital saved = hospitalRepository.save(hospital);
-                return toResponse(saved);
+                return toResponse(saved, true);
         }
 
         @Override
@@ -81,7 +81,7 @@ public class HospitalServiceImpl implements HospitalService {
                 Hospital hospital = hospitalRepository.findByStaffUser(staffUser)
                                 .orElseThrow(() -> new IllegalStateException("No hospital found for this staff"));
 
-                return toResponse(hospital);
+                return toResponse(hospital, true);
         }
 
         @Override
@@ -100,21 +100,21 @@ public class HospitalServiceImpl implements HospitalService {
                 hospital.setPincode(request.getPincode());
                 hospital.setDocumentUrl(request.getDocumentUrl());
 
-                return toResponse(hospitalRepository.save(hospital));
+                return toResponse(hospitalRepository.save(hospital), true);
         }
 
         @Override
         public HospitalResponse getHospitalById(Long id) {
                 Hospital hospital = hospitalRepository.findById(id)
                                 .orElseThrow(() -> new IllegalStateException("Hospital not found"));
-                return toResponse(hospital);
+                return toResponse(hospital, false);
         }
 
         @Override
         public List<HospitalResponse> getApprovedHospitals() {
                 return hospitalRepository.findByStatus(HospitalStatus.APPROVED)
                                 .stream()
-                                .map(this::toResponse)
+                                .map(h -> toResponse(h, false))
                                 .toList();
         }
 
@@ -122,7 +122,7 @@ public class HospitalServiceImpl implements HospitalService {
         public List<HospitalResponse> getAllHospitals() {
                 return hospitalRepository.findAll()
                                 .stream()
-                                .map(this::toResponse)
+                                .map(h -> toResponse(h, false))
                                 .toList();
         }
 
@@ -130,7 +130,7 @@ public class HospitalServiceImpl implements HospitalService {
         public List<HospitalResponse> getPendingHospitals() {
                 return hospitalRepository.findByStatus(HospitalStatus.PENDING)
                                 .stream()
-                                .map(this::toResponse)
+                                .map(h -> toResponse(h, true))
                                 .toList();
         }
 
@@ -155,7 +155,7 @@ public class HospitalServiceImpl implements HospitalService {
                         emailService.sendSimpleEmail(saved.getStaffUser().getEmail(), subject, body);
                 }
 
-                return toResponse(saved);
+                return toResponse(saved, true);
 
         }
 
@@ -180,7 +180,7 @@ public class HospitalServiceImpl implements HospitalService {
                         emailService.sendSimpleEmail(saved.getStaffUser().getEmail(), subject, body);
                 }
 
-                return toResponse(saved);
+                return toResponse(saved, true);
 
         }
 
@@ -195,9 +195,18 @@ public class HospitalServiceImpl implements HospitalService {
                 return hospital;
         }
 
-        private HospitalResponse toResponse(Hospital hospital) {
+        private HospitalResponse toResponse(Hospital hospital, boolean includeLowStock) {
                 List<com.vaxify.app.dtos.VaccineResponseDTO> vaccines = vaccineRepository.findByHospital(hospital)
                                 .stream()
+                                .filter(v -> {
+                                        if (includeLowStock)
+                                                return true;
+                                        // filter out critical low stock vaccines (< 20%)
+                                        if (v.getCapacity() != null && v.getCapacity() > 0) {
+                                                return v.getStock() >= (v.getCapacity() * 0.2);
+                                        }
+                                        return true;
+                                })
                                 .map(v -> com.vaxify.app.dtos.VaccineResponseDTO.builder()
                                                 .id(v.getId())
                                                 .name(v.getName())
